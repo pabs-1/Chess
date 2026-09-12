@@ -1,5 +1,5 @@
 /*
- * Pabs Chess — free chess learning tools.
+ * Pabs Chess: free chess learning tools.
  * Copyright (C) 2026 Pabs Chess contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  * See COPYING for the full license text.
@@ -36,7 +36,7 @@ function MoveButton({
       type="button"
       onClick={() => onSelect(move.ply + 1)}
       aria-current={selected}
-      aria-label={t('review.selectMove', { move: `${move.san} — ${t(`classification.${move.classification}`)}` })}
+      aria-label={t('review.selectMove', { move: `${move.san}, ${t(`classification.${move.classification}`)}` })}
       className={`flex items-center gap-1 rounded px-2 py-1 text-left font-mono text-sm hover:bg-slate-800 ${
         selected ? 'bg-slate-700 text-slate-50' : style.text
       }`}

@@ -83,7 +83,7 @@
     "progress": "{{completed}} of {{total}}",
     "players": "{{white}} versus {{black}}",
     "accuracy": "Accuracy",
-    "accuracyUnavailable": "—",
+    "accuracyUnavailable": "n/a",
     "depthUsed": "Analysed at depth {{depth}}",
     "moves": "Moves",
     "startPosition": "Starting position",

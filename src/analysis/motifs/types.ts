@@ -1,5 +1,5 @@
 /*
- * Pabs Chess — free chess learning tools.
+ * Pabs Chess: free chess learning tools.
  * Copyright (C) 2026 Pabs Chess contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  * See COPYING for the full license text.
@@ -10,8 +10,8 @@
  *
  * A motif is never a sentence and never a label. It names a pattern and carries
  * the concrete squares, pieces and moves behind it, so that `src/commentary/`
- * can say it in any language and a test can assert it in none. Chess notation —
- * SAN moves, algebraic squares, piece letters — is data, not text, and is
+ * can say it in any language and a test can assert it in none. Chess notation
+ * (SAN moves, algebraic squares, piece letters) is data, not text, and is
  * identical in every locale, so it lives here.
  *
  * Exactly one motif is reported per move, chosen by tier: what is happening to

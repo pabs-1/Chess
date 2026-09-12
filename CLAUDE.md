@@ -1,4 +1,4 @@
-# Pabs Chess — working context
+# Pabs Chess: working context
 
 Free, open source, client-side chess learning app. Two products: a free **Game
 Review** (import a PGN or a Chess.com / Lichess game, get move-by-move
@@ -57,8 +57,8 @@ public/engine/  Stockfish binaries (gitignored, fetched by postinstall)
   Swapping to the multi-threaded build must stay a matter of configuration
   (`VITE_ENGINE_*` + `public/_headers`), never a rewrite. See
   `src/engine/config.ts`.
-- **Score convention: everything Stockfish reports — `scoreCp`, `scoreMate`,
-  `wdl` — is from the point of view of the side to move.** The `engine/` layer
+- **Score convention: everything Stockfish reports (`scoreCp`, `scoreMate`,
+  `wdl`) is from the point of view of the side to move.** The `engine/` layer
   preserves that convention untouched and never converts. Any conversion to a
   White-relative point of view belongs in `analysis/`, at the point of use, and
   must be explicit. This is the classic source of downstream sign bugs.
@@ -66,7 +66,7 @@ public/engine/  Stockfish binaries (gitignored, fetched by postinstall)
 - **MultiPV, not depth, dominates review cost.** Measured on a 44-move game:
   one line per position 23s, three lines 84s, because the engine cannot prune
   the alternatives away. Hence the two-pass review in
-  `src/analysis/reviewGame.ts` — a single-line scan over every position, then a
+  `src/analysis/reviewGame.ts`: a single-line scan over every position, then a
   MultiPV pass over only the positions where the player went wrong. Depth costs
   too: 14 → 33s, 16 → 84s, 18 → 233s, so 14 is the default.
 - **Both sides of a grading delta must come from the same search
@@ -77,7 +77,7 @@ public/engine/  Stockfish binaries (gitignored, fetched by postinstall)
 
 - Lichess and Chess.com are read **directly from the browser**, because there is
   no backend. That depends on both sites allowing cross-origin requests. If one
-  stops, the fetch fails and the user is told — a proxy is not an option, it
+  stops, the fetch fails and the user is told: a proxy is not an option, it
   would be a backend.
 - A cross-origin refusal and a dead network are indistinguishable to a page:
   `fetch` rejects with the same TypeError either way. Hence the single
@@ -93,10 +93,10 @@ public/engine/  Stockfish binaries (gitignored, fetched by postinstall)
 - Three modes, decided with the user: **free** plays with no commentary at all;
   **coach** explains every move of yours and lets the game carry on; **training**
   refuses a blunder before it reaches the board and makes you try again. Only a
-  blunder is refused — stopping on every inaccuracy would be unplayable.
+  blunder is refused: stopping on every inaccuracy would be unplayable.
 - **The engine does two jobs and they must not be confused.** It picks the
   opponent's moves, possibly weakened by `UCI_Elo`, and it analyses yours for the
-  coach, which has to be full strength — coaching with a handicapped engine would
+  coach, which has to be full strength: coaching with a handicapped engine would
   teach the handicap. `usePlayGame` switches the limit off around every analysis
   and back on around every opponent move.
 - A refused move leaves the position *and the baseline analysis* untouched, so
@@ -114,8 +114,8 @@ public/engine/  Stockfish binaries (gitignored, fetched by postinstall)
   committed**: small, public domain, and it keeps builds reproducible and
   offline. `scripts/fetch-openings.mjs` regenerates it.
 - The book is keyed by **position**, not by move list, so transpositions are
-  recognised. `toEpd` exists in two places — the script and `src/openings/epd.ts`
-  — and they must stay identical: the book is written with one and read with the
+  recognised. `toEpd` exists in two places (the script and `src/openings/epd.ts`)
+  and they must stay identical: the book is written with one and read with the
   other.
 - A game is named by the **deepest** position the book knows, not by where it
   first misses. The data set carries extra entries for transpositions precisely
@@ -137,7 +137,7 @@ public/engine/  Stockfish binaries (gitignored, fetched by postinstall)
 - If a design decision is ambiguous, stop and ask the user instead of picking
   unilaterally.
 
-## Roadmap (context — do not implement ahead of the user's request)
+## Roadmap (context: do not implement ahead of the user's request)
 
 1. UCI wrapper ✅
 2. Analysis of a pasted PGN: win-percent-delta classification, accuracy, graph ✅
@@ -176,7 +176,7 @@ Design notes to keep in mind for those phases:
   deliberately partial.** On the example game two of three blunders get a motif;
   the third is a positional blunder no detector recognises, and the app says so
   by showing only the signal and the engine's move rather than inventing a
-  reason. Adding detectors is the way to close that gap — never loosening the
+  reason. Adding detectors is the way to close that gap, never loosening the
   ones that exist.
 - Material detectors rest on `staticExchangeGain`. A naive "is the piece
   defended" test calls a recaptured bishop a hung bishop; judging the swing

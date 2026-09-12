@@ -1,5 +1,5 @@
 /*
- * Pabs Chess — free chess learning tools.
+ * Pabs Chess: free chess learning tools.
  * Copyright (C) 2026 Pabs Chess contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  * See COPYING for the full license text.
@@ -102,7 +102,7 @@ export function castlingRights(fen: string, color: Color): { king: boolean; quee
  *
  * Static exchange evaluation: each side takes with its least valuable attacker
  * in turn, and either side stops as soon as continuing would cost it. The
- * result is what `side` gains by capturing there, in pawns, never negative —
+ * result is what `side` gains by capturing there, in pawns, never negative:
  * a side that would lose by capturing simply does not.
  *
  * Pieces are moved on a real board rather than on a copy so that x-ray

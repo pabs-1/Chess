@@ -1,19 +1,19 @@
 /*
- * Pabs Chess — free chess learning tools.
+ * Pabs Chess: free chess learning tools.
  * Copyright (C) 2026 Pabs Chess contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  * See COPYING for the full license text.
  */
 
 /**
- * Point-of-view conversion — the one place allowed to flip a sign.
+ * Point-of-view conversion: the one place allowed to flip a sign.
  *
  * Stockfish expresses every evaluation from the point of view of the side to
  * move. Reviewing a game means comparing the position before a move with the
  * position after it, and between those two the side to move has changed: the
  * engine's two numbers are expressed for opposite players. Comparing them
  * directly is the single most likely way to get a game review silently,
- * plausibly wrong — every classification inverted for one colour.
+ * plausibly wrong: every classification inverted for one colour.
  *
  * So conversion happens here, explicitly, and nowhere else. `src/engine/` never
  * converts; callers state which side a number is expressed for and which side
@@ -42,7 +42,7 @@ export function invertWdl(wdl: Wdl): Wdl {
 /**
  * Re-expresses an evaluation for the opposite side.
  *
- * `mate 0` — the side it is expressed for has already been mated — has no
+ * `mate 0` (the side it is expressed for has already been mated) has no
  * meaningful opposite, since there is no "mates in zero". It is left at 0
  * rather than invented; the UCI parser never produces it, because a position
  * with no legal move reports no line at all.

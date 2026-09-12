@@ -1,5 +1,5 @@
 /*
- * Pabs Chess — free chess learning tools.
+ * Pabs Chess: free chess learning tools.
  * Copyright (C) 2026 Pabs Chess contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  * See COPYING for the full license text.
@@ -73,7 +73,7 @@ export interface Classification {
  * True when the player had no real choice: one legal move, or one move so far
  * ahead of every alternative that playing anything else loses the game.
  *
- * The second case requires the player to have actually found it — otherwise the
+ * The second case requires the player to have actually found it: otherwise the
  * position was not forced for them, it was a trap they fell into.
  */
 function isForced(input: ClassificationInput): boolean {

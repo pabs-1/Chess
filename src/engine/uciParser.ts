@@ -1,5 +1,5 @@
 /*
- * Pabs Chess — free chess learning tools.
+ * Pabs Chess: free chess learning tools.
  * Copyright (C) 2026 Pabs Chess contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  * See COPYING for the full license text.
@@ -47,7 +47,7 @@ function toInt(token: string | undefined): number | null {
 /**
  * Parses one `info` line.
  *
- * Returns null — meaning "nothing usable here", not "malformed" — for:
+ * Returns null (meaning "nothing usable here", not "malformed") for:
  *  - `info string …`, which is human-readable engine chatter;
  *  - lines flagged `lowerbound` / `upperbound`, whose score is an aspiration
  *    window bound rather than an exact evaluation;

@@ -1,5 +1,5 @@
 /*
- * Pabs Chess — free chess learning tools.
+ * Pabs Chess: free chess learning tools.
  * Copyright (C) 2026 Pabs Chess contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  * See COPYING for the full license text.
@@ -10,7 +10,7 @@
  *
  * It consumes the data `src/analysis/` produced and decides *what to say and in
  * what order*. It never decides whether a move was bad, never looks at a board,
- * and never computes anything about chess — if it needed to, the fact belongs
+ * and never computes anything about chess: if it needed to, the fact belongs
  * upstream as data.
  *
  * The words themselves live in `src/i18n/locales/`. What this layer emits is a

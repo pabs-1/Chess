@@ -1,5 +1,5 @@
 /*
- * Pabs Chess — free chess learning tools.
+ * Pabs Chess: free chess learning tools.
  * Copyright (C) 2026 Pabs Chess contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  * See COPYING for the full license text.
@@ -9,7 +9,7 @@
 
 /**
  * Build-time engine selection. Changing engine build is a configuration change,
- * never a code change — see src/engine/config.ts and public/_headers.
+ * never a code change. See src/engine/config.ts and public/_headers.
  */
 interface ImportMetaEnv {
   /** Path to the Stockfish worker script, served from public/. */

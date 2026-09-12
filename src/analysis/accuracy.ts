@@ -1,5 +1,5 @@
 /*
- * Pabs Chess — free chess learning tools.
+ * Pabs Chess: free chess learning tools.
  * Copyright (C) 2026 Pabs Chess contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  * See COPYING for the full license text.
@@ -42,7 +42,7 @@ export function moveAccuracy(winPercentLost: number): number {
  * it is a pure function, so swapping in a volatility-weighted average later
  * changes this file and nothing else.
  *
- * @returns 0–100, or null when the player made no moves — a one-ply game has no
+ * @returns 0–100, or null when the player made no moves: a one-ply game has no
  *   Black accuracy, and inventing a number for that would be a lie
  */
 export function gameAccuracy(moveAccuracies: readonly number[]): number | null {

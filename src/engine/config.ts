@@ -1,5 +1,5 @@
 /*
- * Pabs Chess — free chess learning tools.
+ * Pabs Chess: free chess learning tools.
  * Copyright (C) 2026 Pabs Chess contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  * See COPYING for the full license text.
@@ -9,7 +9,7 @@
  * Engine build selection.
  *
  * Which Stockfish build runs, and how it is configured, is a matter of build
- * configuration — never of application code. Switching from the single-threaded
+ * configuration, never of application code. Switching from the single-threaded
  * build to the multi-threaded one means setting the environment variables below
  * and enabling the COOP/COEP headers in public/_headers, nothing more.
  */

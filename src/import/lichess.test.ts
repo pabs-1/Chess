@@ -1,5 +1,5 @@
 /*
- * Pabs Chess — free chess learning tools.
+ * Pabs Chess: free chess learning tools.
  * Copyright (C) 2026 Pabs Chess contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  * See COPYING for the full license text.
@@ -8,7 +8,7 @@
 /**
  * The fixtures below follow the shapes the Lichess API documents. They were
  * written by hand rather than captured, because the sandbox this was built in
- * cannot reach lichess.org — so they prove the parser handles the documented
+ * cannot reach lichess.org, so they prove the parser handles the documented
  * shape and its ragged edges, not that the live endpoint still emits it.
  */
 

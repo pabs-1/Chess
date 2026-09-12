@@ -1,5 +1,5 @@
 /*
- * Pabs Chess — free chess learning tools.
+ * Pabs Chess: free chess learning tools.
  * Copyright (C) 2026 Pabs Chess contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  * See COPYING for the full license text.
@@ -51,7 +51,7 @@ function buildGoCommand(request: AnalyseRequest, config: EngineConfig): string {
  * The engine speaks one conversation at a time, so `analyse()` and
  * `setOption()` are serialised through an internal FIFO queue: calling
  * `analyse()` while a search is running does not reject and does not interleave
- * commands — it waits its turn. `stop()` ends the *current* search early, and
+ * commands: it waits its turn. `stop()` ends the *current* search early, and
  * that search resolves with whatever depth it had reached, which is a valid
  * result rather than an error. `dispose()` rejects everything still queued.
  *
@@ -247,7 +247,7 @@ export class Engine {
       const bestMove = await finished
       return { ...snapshot(), bestMove }
     } catch (error) {
-      // The search was abandoned without the engine being told — an onProgress
+      // The search was abandoned without the engine being told: an onProgress
       // consumer threw, say. Drain it, or the next queued `position` would
       // arrive mid-search and desynchronise the protocol.
       await this.#abortSearch()

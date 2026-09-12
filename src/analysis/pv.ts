@@ -1,5 +1,5 @@
 /*
- * Pabs Chess — free chess learning tools.
+ * Pabs Chess: free chess learning tools.
  * Copyright (C) 2026 Pabs Chess contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  * See COPYING for the full license text.
@@ -49,8 +49,8 @@ export function parseUciMove(uci: string): UciMove | null {
 /**
  * Converts a principal variation from UCI to SAN.
  *
- * Stops at the first move that cannot be played — an illegal move means the
- * rest of the variation is meaningless anyway — and returns an empty array for
+ * Stops at the first move that cannot be played (an illegal move means the
+ * rest of the variation is meaningless anyway) and returns an empty array for
  * a position that cannot be set up. Never throws: a malformed variation is a
  * display problem, not a reason to take the page down.
  */

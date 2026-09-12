@@ -1,5 +1,5 @@
 /*
- * Pabs Chess — free chess learning tools.
+ * Pabs Chess: free chess learning tools.
  * Copyright (C) 2026 Pabs Chess contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  * See COPYING for the full license text.
@@ -64,7 +64,7 @@ export function parseLichessGame(value: unknown): ImportedGame | null {
 /**
  * Parses an NDJSON body: one JSON object per line.
  *
- * A malformed line is skipped rather than fatal — a truncated stream should
+ * A malformed line is skipped rather than fatal: a truncated stream should
  * still yield the games that did arrive.
  */
 export function parseLichessNdjson(body: string): ImportedGame[] {

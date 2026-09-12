@@ -1,5 +1,5 @@
 /*
- * Pabs Chess — free chess learning tools.
+ * Pabs Chess: free chess learning tools.
  * Copyright (C) 2026 Pabs Chess contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  * See COPYING for the full license text.
@@ -7,7 +7,7 @@
 
 /**
  * The rules side of playing a game: legal moves, applying one, and knowing when
- * it is over. Pure, and data only — the engine and React live elsewhere.
+ * it is over. Pure, and data only: the engine and React live elsewhere.
  */
 
 import { Chess } from 'chess.js'

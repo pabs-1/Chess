@@ -1,5 +1,5 @@
 /*
- * Pabs Chess — free chess learning tools.
+ * Pabs Chess: free chess learning tools.
  * Copyright (C) 2026 Pabs Chess contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  * See COPYING for the full license text.
@@ -59,7 +59,7 @@ function detailValues(motif: Motif): Record<string, string | number> {
  * The ladder of hints for one move, shortest first.
  *
  * A move nobody needs explaining gets nothing. A move with no motif behind it
- * still gets the signal and the engine's answer, but no theme and no detail —
+ * still gets the signal and the engine's answer, but no theme and no detail:
  * claiming a reason we did not find would be worse than admitting we have none.
  */
 export function commentFor(move: ReviewedMove): CommentStep[] {

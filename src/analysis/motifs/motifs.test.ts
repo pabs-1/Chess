@@ -1,5 +1,5 @@
 /*
- * Pabs Chess — free chess learning tools.
+ * Pabs Chess: free chess learning tools.
  * Copyright (C) 2026 Pabs Chess contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  * See COPYING for the full license text.
@@ -20,7 +20,7 @@ const START_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
 
 /**
  * Builds a context by actually playing the move, so `fenAfter` can never
- * disagree with `fenBefore` and `uci` the way a hand-written fixture could —
+ * disagree with `fenBefore` and `uci` the way a hand-written fixture could,
  * and an illegal fixture fails loudly instead of quietly testing nothing.
  */
 function contextOf(

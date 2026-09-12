@@ -1,5 +1,5 @@
 /*
- * Pabs Chess — free chess learning tools.
+ * Pabs Chess: free chess learning tools.
  * Copyright (C) 2026 Pabs Chess contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  * See COPYING for the full license text.
@@ -15,7 +15,7 @@ import type { OpeningClassification } from '../openings/index.ts'
  *
  * The book is about 450 KB, so it is a separate chunk fetched on demand rather
  * than part of the page every visitor downloads. Until it arrives the result is
- * null, which the interface shows as nothing at all — a missing opening name is
+ * null, which the interface shows as nothing at all: a missing opening name is
  * not worth a spinner.
  *
  * `positions` must keep its identity between renders, or the name is discarded

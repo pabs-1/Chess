@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /*
- * Pabs Chess — free chess learning tools.
+ * Pabs Chess: free chess learning tools.
  * Copyright (C) 2026 Pabs Chess contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  * See COPYING for the full license text.
@@ -18,7 +18,7 @@
  *
  * The upstream repository also publishes a `dist/` with the positions already
  * computed, but it is built by CI and not committed, so the moves are replayed
- * here instead — which also guarantees the positions are written in exactly the
+ * here instead, which also guarantees the positions are written in exactly the
  * form src/openings/epd.ts will look them up by.
  */
 

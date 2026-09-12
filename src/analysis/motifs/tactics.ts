@@ -1,5 +1,5 @@
 /*
- * Pabs Chess — free chess learning tools.
+ * Pabs Chess: free chess learning tools.
  * Copyright (C) 2026 Pabs Chess contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  * See COPYING for the full license text.
@@ -14,7 +14,7 @@ import type { PieceCode } from './types.ts'
  *
  * Not every double attack is a fork worth naming: a queen touching two defended
  * pawns has achieved nothing. A target counts when taking it would actually
- * cost the player something — it is the king, it is worth more than the piece
+ * cost the player something: it is the king, it is worth more than the piece
  * attacking it, or nothing defends it.
  */
 function isWorthwhileTarget(

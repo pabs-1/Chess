@@ -1,12 +1,12 @@
 /*
- * Pabs Chess — free chess learning tools.
+ * Pabs Chess: free chess learning tools.
  * Copyright (C) 2026 Pabs Chess contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  * See COPYING for the full license text.
  */
 
 /**
- * SCORE CONVENTION — read this before using anything in this file.
+ * SCORE CONVENTION: read this before using anything in this file.
  *
  * Every evaluation Stockfish reports is from the point of view of the SIDE TO
  * MOVE in the analysed position: `scoreCp`, `scoreMate` and `wdl` alike. A

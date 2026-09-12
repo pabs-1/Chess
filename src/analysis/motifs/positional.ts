@@ -1,5 +1,5 @@
 /*
- * Pabs Chess — free chess learning tools.
+ * Pabs Chess: free chess learning tools.
  * Copyright (C) 2026 Pabs Chess contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  * See COPYING for the full license text.
@@ -20,7 +20,7 @@ function fileIndex(square: string): number {
  * Only once the king has left the centre: while it is still on d or e the
  * position has not committed, and pushing a pawn there is ordinary play rather
  * than a concession. Only pawns on their starting rank count, and only those on
- * the king's file or next to it — those are the three that shelter it.
+ * the king's file or next to it: those are the three that shelter it.
  */
 export const weakensKing: Detector = (context) => {
   const played = playUci(context.fenBefore, context.uci)

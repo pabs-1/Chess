@@ -1,5 +1,5 @@
 /*
- * Pabs Chess — free chess learning tools.
+ * Pabs Chess: free chess learning tools.
  * Copyright (C) 2026 Pabs Chess contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  * See COPYING for the full license text.
@@ -13,7 +13,7 @@
  * one of them stops doing so, the fetch fails and the user is told so, rather
  * than a server appearing in the architecture.
  *
- * Everything the app needs from a fetched game is its PGN — the review pipeline
+ * Everything the app needs from a fetched game is its PGN: the review pipeline
  * takes it from there. The rest is what a person needs to pick the right game
  * out of a list.
  */
@@ -52,7 +52,7 @@ export type ImportErrorCode =
   | 'rate-limited'
   /**
    * The request never completed. In a browser this is also what a cross-origin
-   * refusal looks like — `fetch` rejects with a TypeError either way, and the
+   * refusal looks like: `fetch` rejects with a TypeError either way, and the
    * page is not allowed to know which it was.
    */
   | 'unreachable'

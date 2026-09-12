@@ -1,5 +1,5 @@
 /*
- * Pabs Chess — free chess learning tools.
+ * Pabs Chess: free chess learning tools.
  * Copyright (C) 2026 Pabs Chess contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  * See COPYING for the full license text.
@@ -14,7 +14,7 @@ export interface OpeningClassification {
   lastBookIndex: number
   /**
    * 0-based ply of the first move played outside theory, or null when the game
-   * never left it — it ended while still in the book.
+   * never left it: it ended while still in the book.
    */
   leftBookAtPly: number | null
 }
@@ -28,7 +28,7 @@ export interface OpeningClassification {
  * wrong name to exactly the games where the name is interesting.
  *
  * @param positions every position the game passed through, starting position
- *   first — the shape `gamePositions` returns
+ *   first, the shape `gamePositions` returns
  */
 export function classifyOpening(
   book: OpeningBook,

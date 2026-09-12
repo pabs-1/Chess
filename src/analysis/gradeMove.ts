@@ -1,5 +1,5 @@
 /*
- * Pabs Chess — free chess learning tools.
+ * Pabs Chess: free chess learning tools.
  * Copyright (C) 2026 Pabs Chess contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  * See COPYING for the full license text.
@@ -10,7 +10,7 @@
  * of it.
  *
  * This is shared deliberately. A whole-game review and the live coach ask the
- * same question — how much did this move cost, and why — and if they answered
+ * same question (how much did this move cost, and why), and if they answered
  * it with two copies of the same arithmetic they would eventually disagree
  * about the same position, which is the one thing a learning tool cannot do.
  *
@@ -45,7 +45,7 @@ export function terminalWinPercent(fen: string): number | null {
 
 /**
  * Win percentage for whoever is to move, from the engine's own point of view on
- * that position — falling back to the result when the game is already over.
+ * that position, falling back to the result when the game is already over.
  */
 export function winPercentToMove(fen: string, analysis: AnalysisResult | undefined): number {
   const best = analysis?.lines[0]

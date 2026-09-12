@@ -1,5 +1,5 @@
 /*
- * Pabs Chess — free chess learning tools.
+ * Pabs Chess: free chess learning tools.
  * Copyright (C) 2026 Pabs Chess contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  * See COPYING for the full license text.
@@ -28,7 +28,7 @@ export type PgnParseErrorCode =
   | 'empty'
   /** chess.js refused it: bad syntax, or a move that cannot be played. */
   | 'invalid'
-  /** Read fine, but contains no moves — headers only, say. */
+  /** Read fine, but contains no moves: headers only, say. */
   | 'no-moves'
 
 export type PgnParseResult =

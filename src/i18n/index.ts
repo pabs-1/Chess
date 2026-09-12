@@ -1,5 +1,5 @@
 /*
- * Pabs Chess — free chess learning tools.
+ * Pabs Chess: free chess learning tools.
  * Copyright (C) 2026 Pabs Chess contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  * See COPYING for the full license text.
@@ -10,7 +10,7 @@
  *
  * Italian is the reference language: it is the fallback, and `it.json` is the
  * file that types every translation key (see i18next.d.ts). Adding a language
- * means adding a locale file and one entry in `resources` — nothing else.
+ * means adding a locale file and one entry in `resources`, nothing else.
  *
  * No user-facing string may live outside src/i18n/locales/.
  */

@@ -1,5 +1,5 @@
 /*
- * Pabs Chess — free chess learning tools.
+ * Pabs Chess: free chess learning tools.
  * Copyright (C) 2026 Pabs Chess contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  * See COPYING for the full license text.
@@ -22,7 +22,7 @@ export interface EvalChartProps {
 /**
  * The evaluation graph, drawn by hand.
  *
- * It is a filled area under a polyline and a midline — a charting library would
+ * It is a filled area under a polyline and a midline; a charting library would
  * be a dependency for one shape. The vertical axis is always White's win
  * percentage, so the picture does not flip meaning every ply.
  */

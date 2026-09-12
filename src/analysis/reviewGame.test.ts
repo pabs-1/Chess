@@ -1,5 +1,5 @@
 /*
- * Pabs Chess — free chess learning tools.
+ * Pabs Chess: free chess learning tools.
  * Copyright (C) 2026 Pabs Chess contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  * See COPYING for the full license text.
@@ -47,7 +47,7 @@ function lineOf(multipv: number, { uci, winPercent }: ScriptedLine): AnalysisLin
 /**
  * An engine that answers from a script keyed by position index.
  *
- * `detailScript`, when given, answers the MultiPV pass instead — the only way
+ * `detailScript`, when given, answers the MultiPV pass instead: the only way
  * to prove that grading never reaches for the detail pass's numbers.
  */
 function engineFor(
@@ -84,7 +84,7 @@ function engineFor(
 
 /**
  * A script in which every side to move sits at `winPercent[i]` and the engine's
- * choice is whatever was actually played — so nobody loses anything.
+ * choice is whatever was actually played, so nobody loses anything.
  */
 function levelScript(game: ParsedGame, winPercents: number[]): ScriptedLine[][] {
   const positions = gamePositions(game)

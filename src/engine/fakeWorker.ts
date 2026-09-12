@@ -1,5 +1,5 @@
 /*
- * Pabs Chess — free chess learning tools.
+ * Pabs Chess: free chess learning tools.
  * Copyright (C) 2026 Pabs Chess contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  * See COPYING for the full license text.
@@ -9,8 +9,8 @@
  * A scripted stand-in for the Stockfish worker, used by Engine.test.ts.
  *
  * It speaks just enough of the UCI protocol to exercise the parts of the
- * wrapper that are hard to get right — the command queue, stopping a running
- * search, and worker failure — without booting a 7 MB WebAssembly module. The
+ * wrapper that are hard to get right (the command queue, stopping a running
+ * search, and worker failure) without booting a 7 MB WebAssembly module. The
  * lines it emits follow the shape captured from the real engine; the protocol
  * *parsing* is tested against verbatim real output in uciParser.test.ts.
  */

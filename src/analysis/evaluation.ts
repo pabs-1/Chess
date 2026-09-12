@@ -1,5 +1,5 @@
 /*
- * Pabs Chess — free chess learning tools.
+ * Pabs Chess: free chess learning tools.
  * Copyright (C) 2026 Pabs Chess contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  * See COPYING for the full license text.
@@ -51,7 +51,7 @@ export function winPercentFromWdl(wdl: Wdl): number {
 }
 
 /**
- * Win percentage from a centipawn score — the fallback for when WDL is
+ * Win percentage from a centipawn score, the fallback for when WDL is
  * unavailable, e.g. an imported analysis or an engine build without
  * `UCI_ShowWDL`.
  *
@@ -76,7 +76,7 @@ export function toEvaluation(line: AnalysisLine): Evaluation {
  * A mate score is a certainty, so it saturates: being the one delivering mate
  * is 100, being the one getting mated is 0.
  *
- * The result is expressed for whichever side the evaluation is expressed for —
+ * The result is expressed for whichever side the evaluation is expressed for:
  * this function does not know, and does not change, the point of view. See
  * src/analysis/pov.ts.
  *

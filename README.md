@@ -4,11 +4,11 @@ Free and open source chess learning tools that run entirely in your browser.
 
 Two things, both free:
 
-1. **Game Review** — import a game (pasted PGN, or a Chess.com / Lichess
+1. **Game Review**: import a game (pasted PGN, or a Chess.com / Lichess
    username) and get a full analysis: move-by-move evaluation, mistake
    classification, accuracy percentage, and an evaluation graph. A free and
    transparent alternative to Chess.com's paid Game Review.
-2. **In-game coach** — play against Stockfish and get real-time commentary that
+2. **In-game coach**: play against Stockfish and get real-time commentary that
    explains *why* a move is good or bad, not just which move was best.
 
 ## What makes it different
@@ -34,7 +34,7 @@ contributors (and for AI assistants) in [`CLAUDE.md`](./CLAUDE.md).
 - **i18n from day one.** No hardcoded UI strings, ever.
 - **Strict separation between analysis and language.** `src/analysis/` produces
   structured data only. `src/commentary/` produces sentences only, from that
-  data. They never mix — that is what keeps tests trivial and makes adding a
+  data. They never mix: that is what keeps tests trivial and makes adding a
   language a new file rather than a refactor.
 
 ## Tech stack
@@ -99,7 +99,7 @@ Opening names come from
 curated data set of about 3,800 openings released under the
 [CC0 Public Domain Dedication](https://creativecommons.org/publicdomain/zero/1.0/).
 
-Unlike the engine, it **is** committed — it is small, it is public domain, and
+Unlike the engine, it **is** committed: it is small, it is public domain, and
 keeping it in the repository means builds are reproducible and need no network.
 [`scripts/fetch-openings.mjs`](./scripts/fetch-openings.mjs) regenerates it from
 upstream when there is reason to:

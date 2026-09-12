@@ -1,5 +1,5 @@
 /*
- * Pabs Chess — free chess learning tools.
+ * Pabs Chess: free chess learning tools.
  * Copyright (C) 2026 Pabs Chess contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  * See COPYING for the full license text.
@@ -85,7 +85,7 @@ export interface ReviewedMove extends GameMove {
   winPercentLost: number
   /** 0–100 for this move alone. */
   accuracy: number
-  /** Win percentage for White after the move — the evaluation graph's axis. */
+  /** Win percentage for White after the move, the evaluation graph's axis. */
   winPercentWhite: number
   /** Evaluation after the move, expressed for White; null once the game has ended. */
   evaluation: Evaluation | null
@@ -242,8 +242,8 @@ export async function reviewGame(
   }
 
   // --- Why each bad move was bad. -------------------------------------------
-  // After the detail pass, so that a move re-graded as forced — which is nobody's
-  // mistake — is not handed an explanation for a mistake it did not make.
+  // After the detail pass, so that a move re-graded as forced, which is nobody's
+  // mistake, is not handed an explanation for a mistake it did not make.
   for (const [index, move] of moves.entries()) {
     move.motif = motifFor(move, scan[index], scan[index + 1], move.classification, move.bestMove)
   }

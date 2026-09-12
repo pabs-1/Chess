@@ -1,5 +1,5 @@
 /*
- * Pabs Chess — free chess learning tools.
+ * Pabs Chess: free chess learning tools.
  * Copyright (C) 2026 Pabs Chess contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  * See COPYING for the full license text.
@@ -36,7 +36,7 @@ describe('toEpd', () => {
   })
 
   it('keeps an en passant square a capture can actually use', () => {
-    // 1. e4 c5 2. e5 d5 — the e5 pawn can take on d6.
+    // 1. e4 c5 2. e5 d5: the e5 pawn can take on d6.
     const board = new Chess()
     for (const san of ['e4', 'c5', 'e5', 'd5']) board.move(san)
 
@@ -45,7 +45,7 @@ describe('toEpd', () => {
 
   it('drops an en passant square nothing can use', () => {
     // chess.js already applies this convention itself, so a FEN carrying an
-    // unusable square comes from somewhere else — typed by hand, or a [FEN] tag
+    // unusable square comes from somewhere else: typed by hand, or a [FEN] tag
     // in a pasted PGN. Those have to key the same as the position reached by
     // playing the moves.
     const byHand = 'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1'
