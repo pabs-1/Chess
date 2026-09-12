@@ -92,6 +92,48 @@ change. It needs cross-origin isolation, because multi-threading requires
 The engine wrapper reads those variables at build time; see
 [`src/engine/config.ts`](./src/engine/config.ts).
 
+## Deployment
+
+The app is a static site: `npm run build` produces `dist/`, and any host that
+can serve static files will do. There is nothing to configure at runtime and no
+server side.
+
+One requirement constrains the choice of host. The engine is WebAssembly, and
+the Stockfish worker loads it with `WebAssembly.instantiateStreaming`, which
+browsers only accept when the response carries the `application/wasm`
+content type. A host that refuses `.wasm` uploads, or serves
+them as something else, will load the interface and then fail on the first
+analysis.
+
+### Cloudflare Pages
+
+The reference target, and the host [`public/_headers`](./public/_headers) is
+written for. Connect the repository and use:
+
+| Setting | Value |
+| --- | --- |
+| Build command | `npm run build` |
+| Build output directory | `dist` |
+| Node version | from [`.node-version`](./.node-version) |
+
+Nothing else is needed. `postinstall` fetches the engine into `public/engine/`
+during the build, so the 7 MB binary stays out of the repository and still ends
+up in `dist/engine/`, and Vite copies `public/_headers` to `dist/_headers`,
+where Cloudflare picks it up. The app has a single entry point and no
+client-side router, so no `_redirects` rule is required.
+
+To deploy from a terminal instead of on push, `npx wrangler pages deploy dist`
+after a build does the same thing.
+
+### Hosts that will not work
+
+**Neocities free sites reject `.wasm`** (`invalid_file_type`, supporter
+required), so the engine cannot be uploaded. Renaming it to a permitted
+extension does not help: the file would then be served with the wrong MIME
+type, and the bundled worker overrides Emscripten's loader with one that has no
+`ArrayBuffer` fallback to catch that. A supporter account lifts the
+restriction.
+
 ## Opening names
 
 Opening names come from
