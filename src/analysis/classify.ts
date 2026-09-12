@@ -46,6 +46,31 @@ export const BEST_MOVE_TOLERANCE = 1
  */
 export const FORCED_ALTERNATIVE_GAP = 20
 
+/**
+ * Mate scores either side of a move, from the mover's point of view: a negative
+ * number of moves means they are the one being mated, null means the engine
+ * reported no forced mate at all.
+ */
+export interface MateContext {
+  mateBefore: number | null
+  mateAfter: number | null
+}
+
+/**
+ * True when the move handed the opponent a forced mate that was not already
+ * there.
+ *
+ * Both the grade and the `allows-mate` motif rest on this, so it lives in one
+ * place: a position the detector calls a mate while the grade calls it best
+ * would put two contradictory sentences on the same screen.
+ */
+export function allowsAvoidableMate(mate: MateContext): boolean {
+  // No mate against the mover after the move: nothing was allowed.
+  if (mate.mateAfter === null || mate.mateAfter >= 0) return false
+  // Already being mated beforehand: this move is not what let it in.
+  return !(mate.mateBefore !== null && mate.mateBefore < 0)
+}
+
 export interface ClassificationInput {
   /** Win percentage for the player about to move, before they moved. */
   winPercentBefore: number
@@ -61,6 +86,11 @@ export interface ClassificationInput {
    * only searched for a single line.
    */
   secondBestWinPercent?: number
+  /**
+   * Mate scores either side of the move, when the engine reported any. Absent
+   * when the caller has no mate information to give.
+   */
+  mate?: MateContext
 }
 
 export interface Classification {
@@ -91,6 +121,16 @@ export function classifyMove(input: ClassificationInput): Classification {
   const winPercentLost = Math.max(0, input.winPercentBefore - input.winPercentAfter)
 
   if (isForced(input)) return { classification: 'forced', winPercentLost }
+
+  // Walking into a forced mate is a blunder whatever the arithmetic says.
+  // Once a position is lost the win percentage has already reached zero, so
+  // the delta cannot fall any further, and the move that actually gets the
+  // player mated would otherwise be graded `best` for costing nothing. The
+  // engine's own choice is exempt: if it too allows mate, there was no better
+  // move to play and the loss was not this move's doing.
+  if (!input.isTopEngineMove && input.mate !== undefined && allowsAvoidableMate(input.mate)) {
+    return { classification: 'blunder', winPercentLost }
+  }
 
   if (input.isTopEngineMove || winPercentLost <= BEST_MOVE_TOLERANCE) {
     return { classification: 'best', winPercentLost }

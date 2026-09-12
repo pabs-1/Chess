@@ -138,8 +138,8 @@
     "solution": "Il motore avrebbe giocato {{move}}.",
     "confirm": {
       "forced": "Mossa obbligata: non c'erano alternative valide.",
-      "best": "Perfetto: non c'era niente di meglio.",
-      "excellent": "Ottima mossa.",
+      "best": "Ottima scelta: non c'era praticamente niente di meglio.",
+      "excellent": "Mossa molto buona.",
       "good": "Buona mossa, la posizione resta solida."
     },
     "motif": {

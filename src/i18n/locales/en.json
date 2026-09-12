@@ -138,8 +138,8 @@
     "solution": "The engine would have played {{move}}.",
     "confirm": {
       "forced": "Forced move: there was no real alternative.",
-      "best": "Perfect: there was nothing better.",
-      "excellent": "Excellent move.",
+      "best": "Great choice: there was next to nothing better.",
+      "excellent": "A very good move.",
       "good": "Good move, the position stays solid."
     },
     "motif": {

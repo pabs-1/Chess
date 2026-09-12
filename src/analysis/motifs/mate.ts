@@ -5,6 +5,7 @@
  * See COPYING for the full license text.
  */
 
+import { allowsAvoidableMate } from '../classify.ts'
 import { uciMoveToSan, uciPvToSan } from '../pv.ts'
 import type { Detector } from './types.ts'
 
@@ -18,9 +19,9 @@ const MAX_LINE_LENGTH = 6
  * the move did not cause it with this one.
  */
 export const allowsMate: Detector = (context) => {
-  const { mateAfter, mateBefore } = context
-  if (mateAfter === null || mateAfter >= 0) return null
-  if (mateBefore !== null && mateBefore < 0) return null
+  const { mateAfter } = context
+  if (!allowsAvoidableMate(context)) return null
+  if (mateAfter === null) return null
 
   return {
     id: 'allows-mate',

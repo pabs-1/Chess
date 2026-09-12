@@ -21,7 +21,7 @@
 import { Chess } from 'chess.js'
 
 import { classifyMove } from './classify.ts'
-import type { Classification, ClassificationInput } from './classify.ts'
+import type { Classification, ClassificationInput, MateContext } from './classify.ts'
 import { toEvaluation } from './evaluation.ts'
 import { detectMotif } from './motifs/index.ts'
 import type { Motif } from './motifs/index.ts'
@@ -94,12 +94,31 @@ export function gradeMove(
     winPercentAfter,
     isTopEngineMove: before?.bestMove === move.uci,
     legalMoveCount: new Chess(move.fenBefore).moves().length,
+    mate: mateContextOf(before, after),
     ...(extra.secondBestWinPercent === undefined
       ? {}
       : { secondBestWinPercent: extra.secondBestWinPercent }),
   }
 
   return { ...classifyMove(input), winPercentBefore, winPercentAfter, input }
+}
+
+/**
+ * Mate scores either side of the move, both from the mover's point of view.
+ *
+ * The engine expresses every score for the side to move, so the score after
+ * the move belongs to the opponent and has to be negated. Doing it here, once,
+ * is what keeps the grade and the motif talking about the same mate.
+ */
+export function mateContextOf(
+  before: AnalysisResult | undefined,
+  after: AnalysisResult | undefined,
+): MateContext {
+  const afterMate = after?.lines[0]?.scoreMate
+  return {
+    mateBefore: before?.lines[0]?.scoreMate ?? null,
+    mateAfter: afterMate == null ? null : -afterMate,
+  }
 }
 
 /** Why the move went wrong, or null when nothing was recognised. */
@@ -110,7 +129,6 @@ export function motifFor(
   classification: MoveGrade['classification'],
   bestMove: string | null,
 ): Motif | null {
-  const beforeLine = before?.lines[0]
   const afterLine = after?.lines[0]
 
   return detectMotif({
@@ -121,9 +139,7 @@ export function motifFor(
     mover: move.color,
     bestMove,
     refutation: afterLine?.pv ?? [],
-    mateBefore: beforeLine?.scoreMate ?? null,
-    // The engine expressed the position after the move for the opponent.
-    mateAfter: afterLine?.scoreMate == null ? null : -afterLine.scoreMate,
+    ...mateContextOf(before, after),
     classification,
   })
 }

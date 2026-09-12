@@ -11,6 +11,7 @@ import {
   BEST_MOVE_TOLERANCE,
   CLASSIFICATION_THRESHOLDS,
   FORCED_ALTERNATIVE_GAP,
+  allowsAvoidableMate,
   classifyMove,
   isNoteworthy,
 } from './classify.ts'
@@ -179,5 +180,63 @@ describe('isNoteworthy', () => {
     expect(isNoteworthy('excellent')).toBe(false)
     expect(isNoteworthy('good')).toBe(false)
     expect(isNoteworthy('forced')).toBe(false)
+  })
+})
+
+describe('classifyMove: walking into mate', () => {
+  /** The real shape of the bug: already lost, so the delta cannot fall. */
+  const alreadyLost = { winPercentBefore: 0, winPercentAfter: 0 }
+
+  it('calls an avoidable mate a blunder even when nothing measurable was lost', () => {
+    const grade = classifyMove(
+      input({ ...alreadyLost, mate: { mateBefore: null, mateAfter: -1 } }),
+    )
+
+    expect(grade.classification).toBe('blunder')
+    // The arithmetic is untouched: the move really did cost nothing measurable.
+    expect(grade.winPercentLost).toBe(0)
+  })
+
+  it('stays quiet when the mate was already there to begin with', () => {
+    const grade = classifyMove(
+      input({ ...alreadyLost, mate: { mateBefore: -3, mateAfter: -1 } }),
+    )
+
+    expect(grade.classification).not.toBe('blunder')
+  })
+
+  it('does not punish the engine own choice when every move allows mate', () => {
+    const grade = classifyMove(
+      input({ ...alreadyLost, isTopEngineMove: true, mate: { mateBefore: null, mateAfter: -2 } }),
+    )
+
+    expect(grade.classification).toBe('best')
+  })
+
+  it('leaves a move that delivers mate alone', () => {
+    const grade = classifyMove(
+      input({ winPercentBefore: 100, winPercentAfter: 100, mate: { mateBefore: 2, mateAfter: 1 } }),
+    )
+
+    expect(grade.classification).not.toBe('blunder')
+  })
+
+  it('grades normally when the caller has no mate information', () => {
+    expect(lost(0).classification).toBe('best')
+    expect(lost(40).classification).toBe('blunder')
+  })
+})
+
+describe('allowsAvoidableMate', () => {
+  it('is true only for a mate this move let in', () => {
+    expect(allowsAvoidableMate({ mateBefore: null, mateAfter: -1 })).toBe(true)
+    // Mating the opponent is not allowing a mate.
+    expect(allowsAvoidableMate({ mateBefore: null, mateAfter: 3 })).toBe(false)
+    // No mate on the board at all.
+    expect(allowsAvoidableMate({ mateBefore: null, mateAfter: null })).toBe(false)
+    // Being mated already: this move is not what let it in.
+    expect(allowsAvoidableMate({ mateBefore: -2, mateAfter: -1 })).toBe(false)
+    // Had a mate, threw it away, and is now the one being mated.
+    expect(allowsAvoidableMate({ mateBefore: 2, mateAfter: -1 })).toBe(true)
   })
 })
