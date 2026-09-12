@@ -6,6 +6,7 @@
  */
 
 import { useTranslation } from 'react-i18next'
+import { AnalysisPlayground } from './AnalysisPlayground.tsx'
 import { LanguageSwitcher } from './LanguageSwitcher.tsx'
 import { LicenseNotice } from './LicenseNotice.tsx'
 
@@ -22,7 +23,9 @@ export function App() {
         <LanguageSwitcher />
       </header>
 
-      <main className="flex-1" />
+      <main className="flex-1">
+        <AnalysisPlayground />
+      </main>
 
       <LicenseNotice />
     </div>
