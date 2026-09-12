@@ -82,8 +82,11 @@ describe('winPercentFromCp', () => {
   })
 
   it('makes a blunder in a level position cost more than the same loss when winning', () => {
-    // This asymmetry is the whole reason the classifier works on win percentage
-    // rather than on centipawns.
+    // The sigmoid saturates, so the same centipawns matter less the further
+    // ahead you are. The effect is modest on this fallback curve and much
+    // stronger on the engine's own WDL, which is what the classifier normally
+    // sees — but it points the same way, and that is why grading works on win
+    // percentage rather than on centipawns.
     const levelPositionLoss = winPercentFromCp(0) - winPercentFromCp(-80)
     const winningPositionLoss = winPercentFromCp(900) - winPercentFromCp(600)
 
