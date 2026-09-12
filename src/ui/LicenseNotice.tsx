@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next'
  * and to be able to reach the corresponding source, so this stays visible in
  * the interface rather than buried in a menu.
  */
-const SOURCE_URL = 'https://github.com/pabs-1/chess'
+const SOURCE_URL = 'https://github.com/pabs-1/Chess'
 const LICENSE_URL = 'https://www.gnu.org/licenses/gpl-3.0.html'
 
 export function LicenseNotice() {
