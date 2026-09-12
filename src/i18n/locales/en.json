@@ -100,5 +100,26 @@
   "color": {
     "white": "White",
     "black": "Black"
+  },
+  "import": {
+    "tabPaste": "Paste a PGN",
+    "tabFetch": "Import from a site",
+    "sourceLabel": "Site",
+    "usernameLabel": "Username",
+    "usernamePlaceholder": "your username",
+    "search": "Find games",
+    "searching": "Searching…",
+    "results": "Recent games of {{username}}",
+    "pick": "Review",
+    "vs": "versus",
+    "unknownPlayer": "Anonymous",
+    "noDate": "Date unknown",
+    "error": {
+      "not-found": "No player by that name on {{site}}.",
+      "empty": "That player has no games we can review.",
+      "rate-limited": "{{site}} asked us to slow down. Try again in a moment.",
+      "unreachable": "Could not reach {{site}}. Check your connection; this can also happen if the site does not allow requests from the browser.",
+      "unexpected": "{{site}} answered in a way we cannot read."
+    }
   }
 }

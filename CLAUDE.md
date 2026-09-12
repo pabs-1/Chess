@@ -39,6 +39,7 @@ first.**
 src/
   engine/       promise-based UCI wrapper over a Web Worker
   analysis/     classifier + motif detectors → DATA ONLY
+  import/       Lichess / Chess.com public APIs → DATA ONLY
   commentary/   templates and sentence generation → TEXT ONLY
   openings/     ECO lookup (later)
   ui/           React components
@@ -72,6 +73,21 @@ public/engine/  Stockfish binaries (gitignored, fetched by postinstall)
   configuration.** Mixing the scan pass and the detail pass inside one
   subtraction would make some deltas incomparable with their neighbours'.
 
+## Import notes
+
+- Lichess and Chess.com are read **directly from the browser**, because there is
+  no backend. That depends on both sites allowing cross-origin requests. If one
+  stops, the fetch fails and the user is told — a proxy is not an option, it
+  would be a backend.
+- A cross-origin refusal and a dead network are indistinguishable to a page:
+  `fetch` rejects with the same TypeError either way. Hence the single
+  `unreachable` code, whose message names both possibilities.
+- **The import clients have never run against the live endpoints.** The sandbox
+  they were written in denies both hosts at the network policy, so the fixtures
+  follow the documented response shapes rather than captured traffic. The UI
+  path was verified in a browser with intercepted responses. First run against
+  the real APIs is still owed.
+
 ## Conventions
 
 - TypeScript strict mode; pure and testable functions wherever possible,
@@ -89,7 +105,7 @@ public/engine/  Stockfish binaries (gitignored, fetched by postinstall)
 
 1. UCI wrapper ✅
 2. Analysis of a pasted PGN: win-percent-delta classification, accuracy, graph ✅
-3. Game import from the Chess.com and Lichess APIs
+3. Game import from the Chess.com and Lichess APIs ✅ (see the caveat below)
 4. Motif detectors + Italian/English templates
 5. Play against the engine: Free / Coach / Training modes
 6. Opening names (lichess-org/chess-openings ECO dataset, public domain) and

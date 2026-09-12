@@ -100,5 +100,26 @@
   "color": {
     "white": "Bianco",
     "black": "Nero"
+  },
+  "import": {
+    "tabPaste": "Incolla un PGN",
+    "tabFetch": "Importa da un sito",
+    "sourceLabel": "Sito",
+    "usernameLabel": "Nome utente",
+    "usernamePlaceholder": "il tuo nome utente",
+    "search": "Cerca le partite",
+    "searching": "Ricerca in corso…",
+    "results": "Ultime partite di {{username}}",
+    "pick": "Analizza",
+    "vs": "contro",
+    "unknownPlayer": "Anonimo",
+    "noDate": "Data sconosciuta",
+    "error": {
+      "not-found": "Nessun giocatore con questo nome su {{site}}.",
+      "empty": "Questo giocatore non ha partite che possiamo analizzare.",
+      "rate-limited": "{{site}} ha chiesto di rallentare. Riprova tra qualche istante.",
+      "unreachable": "Non è stato possibile contattare {{site}}. Controlla la connessione; può succedere anche se il sito non consente le richieste dal browser.",
+      "unexpected": "{{site}} ha risposto in un modo che non sappiamo interpretare."
+    }
   }
 }

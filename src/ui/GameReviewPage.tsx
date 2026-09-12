@@ -10,7 +10,9 @@ import { useTranslation } from 'react-i18next'
 
 import { DEFAULT_REVIEW_DEPTH, formatEval, gamePositions, parsePgn } from '../analysis/index.ts'
 import type { GameReview, ReviewedMove } from '../analysis/index.ts'
+import type { ImportedGame } from '../import/index.ts'
 import { Board } from './Board.tsx'
+import { GameImporter } from './GameImporter.tsx'
 import { EvalChart } from './EvalChart.tsx'
 import { MoveList } from './MoveList.tsx'
 import { CLASSIFICATION_ORDER, classificationStyle } from './classificationStyle.ts'
@@ -158,6 +160,7 @@ export function GameReviewPage() {
   const [pgn, setPgn] = useState('')
   const [depth, setDepth] = useState(DEFAULT_REVIEW_DEPTH)
   const [selected, setSelected] = useState(0)
+  const [inputTab, setInputTab] = useState<'paste' | 'fetch'>('paste')
 
   const pgnFieldId = useId()
   const depthFieldId = useId()
@@ -207,6 +210,16 @@ export function GameReviewPage() {
     event.preventDefault()
     if (parsed === null || !parsed.ok || busy) return
     start(parsed.game, depth)
+  }
+
+  function onPickImported(game: ImportedGame) {
+    // Keep the PGN either way: if it will not parse, the paste tab is where the
+    // reason is shown, along with the text that caused it.
+    setPgn(game.pgn)
+
+    const result = parsePgn(game.pgn)
+    if (result.ok) start(result.game, depth)
+    else setInputTab('paste')
   }
 
   if (review !== null) {
@@ -288,73 +301,98 @@ export function GameReviewPage() {
         <p className="mt-1 text-sm text-slate-400">{t('review.description')}</p>
       </div>
 
-      <form className="flex flex-col gap-4" onSubmit={onSubmit}>
+      <div className="flex gap-1 border-b border-slate-800">
+        {(['paste', 'fetch'] as const).map((candidate) => (
+          <button
+            key={candidate}
+            type="button"
+            onClick={() => setInputTab(candidate)}
+            aria-current={inputTab === candidate ? 'true' : undefined}
+            className={`-mb-px border-b-2 px-3 py-2 text-sm transition-colors ${
+              inputTab === candidate
+                ? 'border-emerald-500 text-slate-50'
+                : 'border-transparent text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            {t(candidate === 'paste' ? 'import.tabPaste' : 'import.tabFetch')}
+          </button>
+        ))}
+      </div>
+
+      <div className="flex flex-wrap items-end gap-4">
         <div className="flex flex-col gap-1">
-          <label className="text-sm text-slate-300" htmlFor={pgnFieldId}>
-            {t('review.pgnLabel')}
+          <label className="text-sm text-slate-300" htmlFor={depthFieldId}>
+            {t('review.depthLabel')}
           </label>
-          <textarea
-            id={pgnFieldId}
-            className="min-h-40 rounded-md border border-slate-700 bg-slate-900 p-2 font-mono text-sm"
-            value={pgn}
-            spellCheck={false}
-            placeholder={t('review.pgnPlaceholder')}
-            aria-invalid={parsed !== null && !parsed.ok}
-            onChange={(event) => setPgn(event.target.value)}
+          <input
+            id={depthFieldId}
+            type="number"
+            className="w-24 rounded-md border border-slate-700 bg-slate-900 p-2 text-sm"
+            min={MIN_DEPTH}
+            max={MAX_DEPTH}
+            value={depth}
+            onChange={(event) =>
+              setDepth(clamp(Number(event.target.value) || MIN_DEPTH, MIN_DEPTH, MAX_DEPTH))
+            }
           />
-          <div className="flex items-center justify-between gap-2">
-            <span className="text-xs text-rose-400">
-              {parsed !== null && !parsed.ok ? t(`review.pgnError.${parsed.error}`) : ''}
-            </span>
-            <button
-              type="button"
-              className="text-xs text-slate-400 underline hover:text-slate-200"
-              onClick={() => setPgn(EXAMPLE_PGN)}
-            >
-              {t('review.loadExample')}
-            </button>
-          </div>
-          {parsed !== null && !parsed.ok && parsed.detail !== '' && (
-            <p className="font-mono text-xs text-slate-500">{parsed.detail}</p>
-          )}
         </div>
 
-        <div className="flex flex-wrap items-end gap-4">
-          <div className="flex flex-col gap-1">
-            <label className="text-sm text-slate-300" htmlFor={depthFieldId}>
-              {t('review.depthLabel')}
-            </label>
-            <input
-              id={depthFieldId}
-              type="number"
-              className="w-24 rounded-md border border-slate-700 bg-slate-900 p-2 text-sm"
-              min={MIN_DEPTH}
-              max={MAX_DEPTH}
-              value={depth}
-              onChange={(event) =>
-                setDepth(clamp(Number(event.target.value) || MIN_DEPTH, MIN_DEPTH, MAX_DEPTH))
-              }
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={parsed?.ok !== true || busy}
-            className="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white disabled:opacity-40"
-          >
-            {t('review.analyse')}
-          </button>
-
+        {busy && (
           <button
             type="button"
             onClick={cancel}
-            disabled={!busy}
-            className="rounded-md border border-slate-700 px-4 py-2 text-sm disabled:opacity-40"
+            className="rounded-md border border-slate-700 px-4 py-2 text-sm"
           >
             {t('review.cancel')}
           </button>
-        </div>
-      </form>
+        )}
+      </div>
+
+      {inputTab === 'fetch' ? (
+        <GameImporter onPick={onPickImported} disabled={busy} />
+      ) : (
+        <form className="flex flex-col gap-4" onSubmit={onSubmit}>
+          <div className="flex flex-col gap-1">
+            <label className="text-sm text-slate-300" htmlFor={pgnFieldId}>
+              {t('review.pgnLabel')}
+            </label>
+            <textarea
+              id={pgnFieldId}
+              className="min-h-40 rounded-md border border-slate-700 bg-slate-900 p-2 font-mono text-sm"
+              value={pgn}
+              spellCheck={false}
+              placeholder={t('review.pgnPlaceholder')}
+              aria-invalid={parsed !== null && !parsed.ok}
+              onChange={(event) => setPgn(event.target.value)}
+            />
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-xs text-rose-400">
+                {parsed !== null && !parsed.ok ? t(`review.pgnError.${parsed.error}`) : ''}
+              </span>
+              <button
+                type="button"
+                className="text-xs text-slate-400 underline hover:text-slate-200"
+                onClick={() => setPgn(EXAMPLE_PGN)}
+              >
+                {t('review.loadExample')}
+              </button>
+            </div>
+            {parsed !== null && !parsed.ok && parsed.detail !== '' && (
+              <p className="font-mono text-xs text-slate-500">{parsed.detail}</p>
+            )}
+          </div>
+
+          <div>
+            <button
+              type="submit"
+              disabled={parsed?.ok !== true || busy}
+              className="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white disabled:opacity-40"
+            >
+              {t('review.analyse')}
+            </button>
+          </div>
+        </form>
+      )}
 
       {busy && (
         <div aria-live="polite" className="flex flex-col gap-2">
