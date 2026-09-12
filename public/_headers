@@ -1,0 +1,15 @@
+# Cloudflare Pages header rules.
+#
+# The single-threaded engine build (stockfish-18-lite-single) runs without any
+# special headers, so nothing is required today.
+#
+# To switch to the multi-threaded build, SharedArrayBuffer must be available,
+# which requires cross-origin isolation. Uncomment the two headers below, then:
+#   1. ENGINE_VARIANT=lite npm run fetch-engine
+#   2. set VITE_ENGINE_WORKER_URL=/engine/stockfish-18-lite.js
+#   3. set VITE_ENGINE_THREADS to the desired thread count
+# No application code changes are needed. See src/engine/config.ts.
+#
+# /*
+#   Cross-Origin-Opener-Policy: same-origin
+#   Cross-Origin-Embedder-Policy: require-corp

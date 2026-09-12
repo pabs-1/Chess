@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+dist-ssr/
+
+# Stockfish binaries: fetched from npm by scripts/fetch-engine.mjs, never committed
+public/engine/
+
+# Local environment overrides
+.env
+.env.local
+.env.*.local
+
+# Editor / OS noise
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.local
+*.log
+npm-debug.log*
+
+# Tooling caches
+.vite/
+coverage/
+*.tsbuildinfo

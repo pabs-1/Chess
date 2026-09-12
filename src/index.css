@@ -1,0 +1,16 @@
+/*
+ * Pabs Chess — free chess learning tools.
+ * Copyright (C) 2026 Pabs Chess contributors
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * See COPYING for the full license text.
+ */
+
+@import 'tailwindcss';
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  @apply bg-slate-950 text-slate-100 antialiased;
+}
