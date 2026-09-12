@@ -40,7 +40,8 @@ contributors (and for AI assistants) in [`CLAUDE.md`](./CLAUDE.md).
 ## Tech stack
 
 Vite · TypeScript (strict) · React · Tailwind CSS · `chess.js` ·
-`chessground` · `stockfish` (WASM) · Vitest · `i18next` / `react-i18next`
+`chessground` · `stockfish` (WASM) · Vitest · ESLint · `i18next` /
+`react-i18next`
 
 ## Getting started
 
@@ -55,6 +56,7 @@ Other scripts:
 npm run build         # type-check and build to dist/
 npm run preview       # serve the production build locally
 npm run typecheck     # tsc only
+npm run lint          # eslint, type-aware
 npm test              # vitest, single run
 npm run test:watch    # vitest, watch mode
 npm run fetch-engine  # re-copy the engine binaries
@@ -106,7 +108,8 @@ public/engine/  Stockfish binaries (gitignored)
 
 ## Conventions
 
-- TypeScript strict mode.
+- TypeScript strict mode, with type-aware ESLint on top: an engine wrapper full
+  of promises lives or dies on rules like `no-floating-promises`.
 - Pure, testable functions wherever possible, especially in `analysis/`.
 - Atomic commits, conventional-commit style.
 - Code, identifiers, code comments and commit messages in **English**. Italian

@@ -28,7 +28,7 @@ move is good or bad). See `README.md` for the user-facing description.
 
 Vite · TypeScript strict · React · Tailwind CSS v4 · `chess.js` ·
 `chessground` (Lichess') for the board · `stockfish` from npm, WASM ·
-Vitest · `i18next` + `react-i18next`.
+Vitest · ESLint (flat config, type-aware) · `i18next` + `react-i18next`.
 
 **Do not add a dependency that is not in that list without asking the user
 first.**
@@ -67,6 +67,8 @@ public/engine/  Stockfish binaries (gitignored, fetched by postinstall)
 
 - TypeScript strict mode; pure and testable functions wherever possible,
   especially in `analysis/`.
+- Before committing, everything must pass: `npm run typecheck`, `npm run lint`,
+  `npm test`, `npm run build`.
 - Code, identifiers, code comments, commit messages: **English**. Italian is the
   reference language for user-facing *text*, which lives only in
   `src/i18n/locales/`.

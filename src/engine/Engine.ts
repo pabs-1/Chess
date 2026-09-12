@@ -29,8 +29,6 @@ interface PendingWait {
   reject: (error: Error) => void
 }
 
-const noop = (): void => {}
-
 /**
  * Builds the `go` command. Never emits a bare `go`, which would let the engine
  * pick its own (effectively unbounded) search.
@@ -301,7 +299,9 @@ export class Engine {
     // Both handlers run `operation`: a predecessor that failed must not cancel
     // the work queued behind it.
     const run = this.#tail.then(operation, operation)
-    this.#tail = run.then(noop, noop)
+    // Swallow the outcome for the tail only: a failure here must not reject the
+    // promise the *next* caller chains onto.
+    this.#tail = run.catch(() => undefined)
     return run
   }
 
