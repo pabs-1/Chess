@@ -12,7 +12,38 @@ export {
   winPercentFromEvaluation,
   winPercentFromWdl,
 } from './evaluation.ts'
+export { gameAccuracy, moveAccuracy } from './accuracy.ts'
+export {
+  BEST_MOVE_TOLERANCE,
+  CLASSIFICATION_THRESHOLDS,
+  FORCED_ALTERNATIVE_GAP,
+  classifyMove,
+  isNoteworthy,
+  type Classification,
+  type ClassificationInput,
+} from './classify.ts'
 export { gamePositions, parsePgn, type PgnParseErrorCode, type PgnParseResult } from './pgn.ts'
+export {
+  invertEvaluation,
+  invertWdl,
+  opponentOf,
+  sideToMove,
+  toPov,
+  toWhitePov,
+  winPercentFor,
+} from './pov.ts'
+export {
+  DEFAULT_REVIEW_DEPTH,
+  DEFAULT_REVIEW_MULTI_PV,
+  ReviewCancelledError,
+  reviewGame,
+  type GameReview,
+  type ReviewEngine,
+  type ReviewOptions,
+  type ReviewProgress,
+  type ReviewedAlternative,
+  type ReviewedMove,
+} from './reviewGame.ts'
 export type {
   Color,
   Evaluation,
