@@ -30,16 +30,20 @@
  * contributes alternatives and nothing else.
  */
 
-import { Chess } from 'chess.js'
-
 import { gameAccuracy, moveAccuracy } from './accuracy.ts'
 import { classifyMove, isNoteworthy } from './classify.ts'
-import type { ClassificationInput } from './classify.ts'
 import { toEvaluation, winPercentFromEvaluation } from './evaluation.ts'
-import { detectMotif } from './motifs/index.ts'
+import {
+  bestMoveOf,
+  bestMoveSanOf,
+  gradeMove,
+  motifFor,
+  winPercentToMove as winPercentForSideToMove,
+} from './gradeMove.ts'
+import type { MoveGrade } from './gradeMove.ts'
 import type { Motif } from './motifs/index.ts'
 import { gamePositions } from './pgn.ts'
-import { opponentOf, sideToMove, toWhitePov, winPercentFor } from './pov.ts'
+import { opponentOf, sideToMove, toWhitePov } from './pov.ts'
 import { uciMoveToSan, uciPvToSan } from './pv.ts'
 import type { AnalyseRequest, AnalysisResult } from '../engine/types.ts'
 import type { Color, Evaluation, GameMove, MoveClassification, ParsedGame } from './types.ts'
@@ -123,19 +127,6 @@ function emptyCounts(): Record<MoveClassification, number> {
   return { forced: 0, best: 0, excellent: 0, good: 0, inaccuracy: 0, mistake: 0, blunder: 0 }
 }
 
-/**
- * Win percentage for the side to move in a position the engine returned nothing
- * for, which means the game ended there.
- *
- * @returns 0–100, or null when the position is not in fact terminal
- */
-function terminalWinPercent(fen: string): number | null {
-  const board = new Chess(fen)
-  if (board.isCheckmate()) return 0
-  if (board.isStalemate() || board.isDraw() || board.isInsufficientMaterial()) return 50
-  return null
-}
-
 function throwIfCancelled(signal: AbortSignal | undefined, engine: ReviewEngine): void {
   if (signal?.aborted !== true) return
   engine.stop()
@@ -162,61 +153,44 @@ export async function reviewGame(
   }
 
   /** Win percentage for the side to move at each position. */
-  const winPercentToMove = positions.map((fen, index) => {
-    const best = scan[index]?.lines[0]
-    if (best !== undefined) return winPercentFromEvaluation(toEvaluation(best))
-    // No line at all: the engine was handed a finished game.
-    return terminalWinPercent(fen) ?? 50
-  })
+  const winPercentToMove = positions.map((fen, index) =>
+    winPercentForSideToMove(fen, scan[index]),
+  )
 
   const winPercentWhite = positions.map((fen, index) =>
     sideToMove(fen) === 'w' ? (winPercentToMove[index] ?? 50) : 100 - (winPercentToMove[index] ?? 50),
   )
 
   // --- Grade every move from the scan pass alone. ----------------------------
-  // Kept so the detail pass can re-grade from exactly the same numbers rather
-  // than reconstructing them.
-  const gradingInputs: ClassificationInput[] = []
+  // Grades are kept so the detail pass can re-grade from exactly the same
+  // numbers rather than reconstructing them.
+  const grades: MoveGrade[] = []
 
   const moves: ReviewedMove[] = game.moves.map((move, index) => {
     const before = scan[index]
     const after = scan[index + 1]
-    const mover = move.color
-
-    const winPercentBefore = winPercentToMove[index] ?? 50
-    // The position after the move is the opponent's to play, so the engine
-    // expressed it for them. Read it back for the player who just moved.
     const afterLine = after?.lines[0]
-    const winPercentAfter =
-      afterLine === undefined
-        ? 100 - (terminalWinPercent(move.fenAfter) ?? 50)
-        : winPercentFor(toEvaluation(afterLine), opponentOf(mover), mover)
 
-    const grading: ClassificationInput = {
-      winPercentBefore,
-      winPercentAfter,
-      isTopEngineMove: before?.bestMove === move.uci,
-      legalMoveCount: new Chess(move.fenBefore).moves().length,
-    }
-    gradingInputs.push(grading)
+    const grade = gradeMove(move, before, after)
+    grades.push(grade)
 
-    const { classification, winPercentLost } = classifyMove(grading)
-
-    const bestMove = before?.bestMove !== undefined && before.bestMove !== '' ? before.bestMove : null
+    const bestMove = bestMoveOf(before)
 
     return {
       ...move,
-      classification,
-      winPercentLost,
-      accuracy: moveAccuracy(winPercentLost),
+      classification: grade.classification,
+      winPercentLost: grade.winPercentLost,
+      accuracy: moveAccuracy(grade.winPercentLost),
       winPercentWhite: winPercentWhite[index + 1] ?? 50,
       evaluation:
-        afterLine === undefined ? null : toWhitePov(toEvaluation(afterLine), opponentOf(mover)),
+        afterLine === undefined
+          ? null
+          : toWhitePov(toEvaluation(afterLine), opponentOf(move.color)),
       bestMove,
-      bestMoveSan: bestMove === null ? null : uciMoveToSan(move.fenBefore, bestMove),
+      bestMoveSan: bestMoveSanOf(move.fenBefore, bestMove),
       alternatives: [],
       motif: null,
-      refutation: uciPvToSan(move.fenAfter, after?.lines[0]?.pv ?? []),
+      refutation: uciPvToSan(move.fenAfter, afterLine?.pv ?? []),
     }
   })
 
@@ -256,10 +230,10 @@ export async function reviewGame(
     // The only grade the extra lines can change: a move that looked merely best
     // may turn out to have been the position's only survivable move. The rest of
     // the input is the scan pass's, untouched.
-    const grading = gradingInputs[index]
-    if (grading !== undefined && alternatives[1] !== undefined) {
+    const grade = grades[index]
+    if (grade !== undefined && alternatives[1] !== undefined) {
       move.classification = classifyMove({
-        ...grading,
+        ...grade.input,
         secondBestWinPercent: alternatives[1].winPercent,
       }).classification
     }
@@ -271,22 +245,7 @@ export async function reviewGame(
   // After the detail pass, so that a move re-graded as forced — which is nobody's
   // mistake — is not handed an explanation for a mistake it did not make.
   for (const [index, move] of moves.entries()) {
-    const before = scan[index]?.lines[0]
-    const after = scan[index + 1]?.lines[0]
-
-    move.motif = detectMotif({
-      fenBefore: move.fenBefore,
-      fenAfter: move.fenAfter,
-      uci: move.uci,
-      san: move.san,
-      mover: move.color,
-      bestMove: move.bestMove,
-      refutation: after?.pv ?? [],
-      mateBefore: before?.scoreMate ?? null,
-      // The engine expressed the position after the move for the opponent.
-      mateAfter: after?.scoreMate == null ? null : -after.scoreMate,
-      classification: move.classification,
-    })
+    move.motif = motifFor(move, scan[index], scan[index + 1], move.classification, move.bestMove)
   }
 
   // --- Totals. --------------------------------------------------------------
