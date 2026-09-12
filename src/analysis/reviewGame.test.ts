@@ -178,6 +178,26 @@ describe('reviewGame', () => {
     expect(review.winPercentWhite).toHaveLength(game.moves.length + 1)
   })
 
+  it('prefers the detail pass ordering as the advice it shows', async () => {
+    const game = parseOk(GAME_PGN)
+    const script = withBestMove(levelScript(game, [50, 80, 50, 50, 50, 50, 50, 50, 50]), 0, 'd2d4')
+
+    // The MultiPV pass searched the same depth without pruning the alternatives
+    // away, and ranks a different move first.
+    const detailScript = script.map((lines) => [...lines])
+    detailScript[0] = [
+      { uci: 'g1f3', winPercent: 50 },
+      { uci: 'd2d4', winPercent: 49 },
+    ]
+
+    const { engine } = engineFor(game, script, detailScript)
+    const review = await reviewGame(engine, game, { multiPV: 3 })
+
+    expect(review.moves[0]?.bestMoveSan).toBe('Nf3')
+    // The grade still comes from the scan pass on both sides.
+    expect(review.moves[0]?.winPercentLost).toBeCloseTo(30, 5)
+  })
+
   it('records the engine choice in both notations', async () => {
     const game = parseOk(GAME_PGN)
     const script = levelScript(game, Array<number>(9).fill(50))

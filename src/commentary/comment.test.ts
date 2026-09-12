@@ -18,6 +18,7 @@ import i18next from 'i18next'
 import { beforeAll, describe, expect, it } from 'vitest'
 
 import { commentFor } from './comment.ts'
+import { renderStep } from './render.ts'
 import { COMMENT_KINDS } from './types.ts'
 import type { CommentStep } from './types.ts'
 import enLocale from '../i18n/locales/en.json'
@@ -40,14 +41,7 @@ beforeAll(async () => {
 })
 
 function render(language: Language, step: CommentStep): string {
-  // Keys are built at runtime from motif ids, so they cannot be literal types
-  // here — proving that they all resolve anyway is what this file is for.
-  const translate = instance.getFixedT(language) as unknown as (
-    key: string,
-    values: Record<string, string | number>,
-  ) => string
-
-  return translate(step.key, step.values)
+  return renderStep(instance.getFixedT(language), step)
 }
 
 /** Every motif, one of each, so the loops below can cover the whole set. */

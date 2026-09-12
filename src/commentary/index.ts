@@ -6,4 +6,5 @@
  */
 
 export { commentFor } from './comment.ts'
+export { renderStep } from './render.ts'
 export { COMMENT_KINDS, type CommentKind, type CommentStep } from './types.ts'

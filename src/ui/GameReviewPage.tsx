@@ -13,6 +13,7 @@ import type { GameReview, ReviewedMove } from '../analysis/index.ts'
 import type { ImportedGame } from '../import/index.ts'
 import { Board } from './Board.tsx'
 import { GameImporter } from './GameImporter.tsx'
+import { MoveCommentary } from './MoveCommentary.tsx'
 import { EvalChart } from './EvalChart.tsx'
 import { MoveList } from './MoveList.tsx'
 import { CLASSIFICATION_ORDER, classificationStyle } from './classificationStyle.ts'
@@ -91,6 +92,8 @@ function MoveDetail({ move }: { move: ReviewedMove | null }) {
       {move.bestMoveSan !== null && move.bestMove !== move.uci && (
         <p className="text-sm text-slate-300">{t('review.bestWas', { move: move.bestMoveSan })}</p>
       )}
+
+      <MoveCommentary key={move.ply} move={move} />
 
       {move.alternatives.length > 0 && (
         <div>

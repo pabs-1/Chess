@@ -106,7 +106,7 @@ public/engine/  Stockfish binaries (gitignored, fetched by postinstall)
 1. UCI wrapper ✅
 2. Analysis of a pasted PGN: win-percent-delta classification, accuracy, graph ✅
 3. Game import from the Chess.com and Lichess APIs ✅ (see the caveat below)
-4. Motif detectors + Italian/English templates
+4. Motif detectors + Italian/English templates ✅ (coverage is partial, see below)
 5. Play against the engine: Free / Coach / Training modes
 6. Opening names (lichess-org/chess-openings ECO dataset, public domain) and
    out-of-book detection
@@ -127,6 +127,28 @@ Design notes to keep in mind for those phases:
   that the user unlocks one at a time, so someone who wants to think it through
   is not handed the answer.
 - Every motif detector carries a level (beginner / intermediate / advanced) so
-  commentary can be filtered to the user.
+  commentary can be filtered to the user. The levels are assigned but nothing
+  filters on them yet.
 - **One motif per comment**, chosen by priority: mate > material > tactics >
-  positional.
+  positional. The order of the `DETECTORS` array in `src/analysis/motifs/` is
+  that rule, and a test holds it there.
+
+## Motif notes
+
+- Seven detectors so far: allows-mate, misses-mate, hangs-piece,
+  misses-material, allows-fork, weakens-king, loses-castling. **Coverage is
+  deliberately partial.** On the example game two of three blunders get a motif;
+  the third is a positional blunder no detector recognises, and the app says so
+  by showing only the signal and the engine's move rather than inventing a
+  reason. Adding detectors is the way to close that gap — never loosening the
+  ones that exist.
+- Material detectors rest on `staticExchangeGain`. A naive "is the piece
+  defended" test calls a recaptured bishop a hung bishop; judging the swing
+  across both plies, with x-ray attackers, is what makes the difference between
+  a trade and a blunder.
+- **The grade and the advice come from different passes on purpose.** Grading
+  uses the scan pass on both sides of the delta, always. The move shown to the
+  player as the better one comes from the detail pass when it ran, because a
+  MultiPV search at the same depth prunes nothing and orders the moves better.
+  Showing the scan's pick next to the detail pass's ranked list contradicted
+  itself on screen, which is how this was found.

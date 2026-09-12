@@ -243,6 +243,16 @@ export async function reviewGame(
 
     move.alternatives = alternatives
 
+    // The detail pass searched the same depth without pruning the alternatives
+    // away, so its ordering is the better advice. Grading is untouched: it keeps
+    // using the scan pass on both sides, or the deltas would stop being
+    // comparable. What changes is only what the player is told to play.
+    const preferred = alternatives[0]
+    if (preferred !== undefined) {
+      move.bestMove = preferred.uci
+      move.bestMoveSan = preferred.san
+    }
+
     // The only grade the extra lines can change: a move that looked merely best
     // may turn out to have been the position's only survivable move. The rest of
     // the input is the scan pass's, untouched.
@@ -271,7 +281,6 @@ export async function reviewGame(
       san: move.san,
       mover: move.color,
       bestMove: move.bestMove,
-      bestLine: before?.pv ?? [],
       refutation: after?.pv ?? [],
       mateBefore: before?.scoreMate ?? null,
       // The engine expressed the position after the move for the opponent.

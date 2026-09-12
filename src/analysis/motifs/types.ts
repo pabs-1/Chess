@@ -125,8 +125,6 @@ export interface MotifContext {
   mover: Color
   /** The engine's preferred move in the position before, in UCI. */
   bestMove: string | null
-  /** The engine's intended continuation from the position before, in UCI. */
-  bestLine: readonly string[]
   /** The opponent's best continuation from the position after, in UCI. */
   refutation: readonly string[]
   /** Moves to mate for the mover; negative means the mover is being mated. */

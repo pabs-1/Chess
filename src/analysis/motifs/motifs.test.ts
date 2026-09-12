@@ -38,7 +38,6 @@ function contextOf(
     san: played.move.san,
     mover: played.move.color,
     bestMove: null,
-    bestLine: [],
     refutation: [],
     mateBefore: null,
     mateAfter: null,
