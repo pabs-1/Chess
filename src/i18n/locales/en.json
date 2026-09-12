@@ -121,5 +121,54 @@
       "unreachable": "Could not reach {{site}}. Check your connection; this can also happen if the site does not allow requests from the browser.",
       "unexpected": "{{site}} answered in a way we cannot read."
     }
+  },
+  "commentary": {
+    "title": "What happened",
+    "reveal": "Tell me more",
+    "hideAll": "Hide",
+    "signal": {
+      "inaccuracy": "There was something better in this position.",
+      "mistake": "This move lets something concrete slip.",
+      "blunder": "This move changes the game, and not in your favour."
+    },
+    "solution": "The engine played {{move}}.",
+    "motif": {
+      "allows-mate": {
+        "theme": "Your opponent now has a forced mate.",
+        "detail": "Mate in {{moves}}: {{line}}."
+      },
+      "misses-mate": {
+        "theme": "You had a forced mate and let it go.",
+        "detail": "{{move}} was mate in {{moves}}."
+      },
+      "hangs-piece": {
+        "theme": "You left a piece where your opponent can simply take it.",
+        "detail": "Your opponent plays {{capture}} and wins $t(pieceDef.{{piece}}) on {{square}}."
+      },
+      "misses-material": {
+        "theme": "There was material to take, and you did not take it.",
+        "detail": "{{move}} would have won $t(pieceDef.{{piece}}) on {{square}}."
+      },
+      "allows-fork": {
+        "theme": "Your opponent can attack two pieces with a single move.",
+        "detail": "After {{reply}} $t(pieceDef.{{forker}}) on {{square}} hits both $t(pieceDef.{{firstPiece}}) on {{firstSquare}} and $t(pieceDef.{{secondPiece}}) on {{secondSquare}}."
+      },
+      "weakens-king": {
+        "theme": "You have weakened the shelter around your king.",
+        "detail": "The pawn on {{from}} was part of the cover for the king on {{kingSquare}}."
+      },
+      "loses-castling": {
+        "theme": "You have given up the right to castle.",
+        "detail": "The king will have to find safety another way, and that costs time."
+      }
+    }
+  },
+  "pieceDef": {
+    "p": "the pawn",
+    "n": "the knight",
+    "b": "the bishop",
+    "r": "the rook",
+    "q": "the queen",
+    "k": "the king"
   }
 }

@@ -36,9 +36,11 @@ import { gameAccuracy, moveAccuracy } from './accuracy.ts'
 import { classifyMove, isNoteworthy } from './classify.ts'
 import type { ClassificationInput } from './classify.ts'
 import { toEvaluation, winPercentFromEvaluation } from './evaluation.ts'
+import { detectMotif } from './motifs/index.ts'
+import type { Motif } from './motifs/index.ts'
 import { gamePositions } from './pgn.ts'
 import { opponentOf, sideToMove, toWhitePov, winPercentFor } from './pov.ts'
-import { uciMoveToSan } from './pv.ts'
+import { uciMoveToSan, uciPvToSan } from './pv.ts'
 import type { AnalyseRequest, AnalysisResult } from '../engine/types.ts'
 import type { Color, Evaluation, GameMove, MoveClassification, ParsedGame } from './types.ts'
 
@@ -88,6 +90,10 @@ export interface ReviewedMove extends GameMove {
   bestMoveSan: string | null
   /** The engine's ranked choices, when the detail pass covered this position. */
   alternatives: ReviewedAlternative[]
+  /** Why the move went wrong, or null when nothing was recognised. */
+  motif: Motif | null
+  /** The opponent's best continuation from the position after, in SAN. */
+  refutation: string[]
 }
 
 export interface GameReview {
@@ -209,6 +215,8 @@ export async function reviewGame(
       bestMove,
       bestMoveSan: bestMove === null ? null : uciMoveToSan(move.fenBefore, bestMove),
       alternatives: [],
+      motif: null,
+      refutation: uciPvToSan(move.fenAfter, after?.lines[0]?.pv ?? []),
     }
   })
 
@@ -247,6 +255,29 @@ export async function reviewGame(
     }
 
     onProgress?.({ phase: 'detail', completed: done + 1, total: detailIndexes.length })
+  }
+
+  // --- Why each bad move was bad. -------------------------------------------
+  // After the detail pass, so that a move re-graded as forced — which is nobody's
+  // mistake — is not handed an explanation for a mistake it did not make.
+  for (const [index, move] of moves.entries()) {
+    const before = scan[index]?.lines[0]
+    const after = scan[index + 1]?.lines[0]
+
+    move.motif = detectMotif({
+      fenBefore: move.fenBefore,
+      fenAfter: move.fenAfter,
+      uci: move.uci,
+      san: move.san,
+      mover: move.color,
+      bestMove: move.bestMove,
+      bestLine: before?.pv ?? [],
+      refutation: after?.pv ?? [],
+      mateBefore: before?.scoreMate ?? null,
+      // The engine expressed the position after the move for the opponent.
+      mateAfter: after?.scoreMate == null ? null : -after.scoreMate,
+      classification: move.classification,
+    })
   }
 
   // --- Totals. --------------------------------------------------------------

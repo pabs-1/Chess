@@ -121,5 +121,54 @@
       "unreachable": "Non è stato possibile contattare {{site}}. Controlla la connessione; può succedere anche se il sito non consente le richieste dal browser.",
       "unexpected": "{{site}} ha risposto in un modo che non sappiamo interpretare."
     }
+  },
+  "commentary": {
+    "title": "Che cosa è successo",
+    "reveal": "Dimmi di più",
+    "hideAll": "Nascondi",
+    "signal": {
+      "inaccuracy": "In questa posizione c'era qualcosa di meglio.",
+      "mistake": "Questa mossa lascia andare qualcosa di concreto.",
+      "blunder": "Questa mossa cambia la partita, e non a tuo favore."
+    },
+    "solution": "Il motore giocava {{move}}.",
+    "motif": {
+      "allows-mate": {
+        "theme": "Ora l'avversario ha un matto forzato.",
+        "detail": "Matto in {{moves}}: {{line}}."
+      },
+      "misses-mate": {
+        "theme": "Avevi un matto forzato e l'hai lasciato passare.",
+        "detail": "{{move}} dava matto in {{moves}}."
+      },
+      "hangs-piece": {
+        "theme": "Hai lasciato un pezzo dove l'avversario può prenderlo.",
+        "detail": "L'avversario gioca {{capture}} e vince $t(pieceDef.{{piece}}) in {{square}}."
+      },
+      "misses-material": {
+        "theme": "C'era materiale da prendere e non l'hai preso.",
+        "detail": "{{move}} vinceva $t(pieceDef.{{piece}}) in {{square}}."
+      },
+      "allows-fork": {
+        "theme": "L'avversario può attaccare due pezzi con una mossa sola.",
+        "detail": "Dopo {{reply}} $t(pieceDef.{{forker}}) in {{square}} attacca insieme $t(pieceDef.{{firstPiece}}) in {{firstSquare}} e $t(pieceDef.{{secondPiece}}) in {{secondSquare}}."
+      },
+      "weakens-king": {
+        "theme": "Hai indebolito il riparo del tuo re.",
+        "detail": "Il pedone in {{from}} faceva parte della difesa del re in {{kingSquare}}."
+      },
+      "loses-castling": {
+        "theme": "Hai perso il diritto di arroccare.",
+        "detail": "Il re dovrà mettersi al sicuro in un altro modo, e costerà tempo."
+      }
+    }
+  },
+  "pieceDef": {
+    "p": "il pedone",
+    "n": "il cavallo",
+    "b": "l'alfiere",
+    "r": "la torre",
+    "q": "la donna",
+    "k": "il re"
   }
 }
