@@ -5,7 +5,7 @@
  * See COPYING for the full license text.
  */
 
-import { useId, useState } from 'react'
+import { useId, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { PLAY_MODES, isCheck, needsPromotion, turnOf } from '../analysis/index.ts'
@@ -14,6 +14,7 @@ import { Board } from './Board.tsx'
 import { PromotionPicker, type PromotionPiece } from './PromotionPicker.tsx'
 import { classificationStyle } from './classificationStyle.ts'
 import { ELO_LEVELS, usePlayGame } from './usePlayGame.ts'
+import { useOpening } from './useOpening.ts'
 import type { MoveReview } from './usePlayGame.ts'
 
 function ReviewLine({ review, refused }: { review: MoveReview; refused: boolean }) {
@@ -64,6 +65,12 @@ export function PlayPage() {
   const modeFieldId = useId()
   const colourFieldId = useId()
   const strengthFieldId = useId()
+
+  const positions = useMemo(
+    () => [...game.moves.map((move) => move.fenBefore), game.fen],
+    [game.moves, game.fen],
+  )
+  const opening = useOpening(positions)
 
   const started = game.phase !== 'idle'
   const playerToMove = game.phase === 'player' && turnOf(game.fen) === game.settings.playerColor
@@ -215,6 +222,14 @@ export function PlayPage() {
 
             {game.refused === null && game.lastReview !== null && game.settings.mode === 'coach' && (
               <ReviewLine review={game.lastReview} refused={false} />
+            )}
+
+            {opening?.opening != null && (
+              <p className="text-sm text-slate-300">
+                <span className="text-slate-500">{t('play.opening')}: </span>
+                <span className="font-mono text-xs text-slate-500">{opening.opening.eco}</span>{' '}
+                {opening.opening.name}
+              </p>
             )}
 
             <div className="flex flex-col gap-2">

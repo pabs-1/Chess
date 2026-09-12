@@ -96,7 +96,10 @@
     "bestWas": "The engine preferred {{move}}",
     "alternatives": "Engine alternatives",
     "noAlternatives": "Alternatives were not computed for this move.",
-    "summary": "Summary"
+    "summary": "Summary",
+    "opening": "Opening",
+    "openingLeftBook": "Left theory at move {{move}}",
+    "openingStillBook": "Still in theory"
   },
   "color": {
     "white": "White",
@@ -209,6 +212,7 @@
       "threefold": "Threefold repetition: a draw.",
       "resigned": "You resigned."
     },
-    "promotion": "Choose a piece"
+    "promotion": "Choose a piece",
+    "opening": "Opening"
   }
 }

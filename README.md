@@ -92,6 +92,31 @@ change. It needs cross-origin isolation, because multi-threading requires
 The engine wrapper reads those variables at build time; see
 [`src/engine/config.ts`](./src/engine/config.ts).
 
+## Opening names
+
+Opening names come from
+[lichess-org/chess-openings](https://github.com/lichess-org/chess-openings), a
+curated data set of about 3,800 openings released under the
+[CC0 Public Domain Dedication](https://creativecommons.org/publicdomain/zero/1.0/).
+
+Unlike the engine, it **is** committed — it is small, it is public domain, and
+keeping it in the repository means builds are reproducible and need no network.
+[`scripts/fetch-openings.mjs`](./scripts/fetch-openings.mjs) regenerates it from
+upstream when there is reason to:
+
+```bash
+node scripts/fetch-openings.mjs
+```
+
+The script replays each line to record the *position* rather than the moves, so
+an opening is recognised however it was transposed into. The data is loaded
+lazily at runtime: it is a separate chunk, not part of the page every visitor
+downloads.
+
+Names are in English only, because the data set is. They are proper nouns of a
+sort, so this is defensible, but it is the one place where the interface is not
+fully bilingual.
+
 ## Project layout
 
 ```

@@ -96,7 +96,10 @@
     "bestWas": "Il motore preferiva {{move}}",
     "alternatives": "Alternative del motore",
     "noAlternatives": "Alternative non calcolate per questa mossa.",
-    "summary": "Riepilogo"
+    "summary": "Riepilogo",
+    "opening": "Apertura",
+    "openingLeftBook": "Fuori dalla teoria alla mossa {{move}}",
+    "openingStillBook": "Ancora nella teoria"
   },
   "color": {
     "white": "Bianco",
@@ -209,6 +212,7 @@
       "threefold": "Tripla ripetizione: patta.",
       "resigned": "Hai abbandonato."
     },
-    "promotion": "Scegli il pezzo"
+    "promotion": "Scegli il pezzo",
+    "opening": "Apertura"
   }
 }

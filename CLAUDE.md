@@ -107,6 +107,23 @@ public/engine/  Stockfish binaries (gitignored, fetched by postinstall)
 - Grading for live play and for a whole-game review share `gradeMove.ts`. Two
   copies of that arithmetic would eventually disagree about the same position.
 
+## Opening notes
+
+- The data set is lichess-org/chess-openings, ~3,800 openings under **CC0**,
+  which is why it can sit inside a GPLv3 program. Unlike the engine it **is
+  committed**: small, public domain, and it keeps builds reproducible and
+  offline. `scripts/fetch-openings.mjs` regenerates it.
+- The book is keyed by **position**, not by move list, so transpositions are
+  recognised. `toEpd` exists in two places — the script and `src/openings/epd.ts`
+  — and they must stay identical: the book is written with one and read with the
+  other.
+- A game is named by the **deepest** position the book knows, not by where it
+  first misses. The data set carries extra entries for transpositions precisely
+  so a game can leave one line and land in a named position by another order.
+- ~450 KB, so it is a lazily imported chunk. The main bundle grew by about 1 KB.
+- **Opening names are English only**, because the data set is. The one place the
+  interface is not fully bilingual.
+
 ## Conventions
 
 - TypeScript strict mode; pure and testable functions wherever possible,
@@ -128,7 +145,7 @@ public/engine/  Stockfish binaries (gitignored, fetched by postinstall)
 4. Motif detectors + Italian/English templates ✅ (coverage is partial, see below)
 5. Play against the engine: Free / Coach / Training modes ✅
 6. Opening names (lichess-org/chess-openings ECO dataset, public domain) and
-   out-of-book detection
+   out-of-book detection ✅
 7. PWA → Capacitor (Android/iOS) → Tauri (desktop)
 
 Design notes to keep in mind for those phases:

@@ -14,6 +14,7 @@ import type { ImportedGame } from '../import/index.ts'
 import { Board } from './Board.tsx'
 import { GameImporter } from './GameImporter.tsx'
 import { MoveCommentary } from './MoveCommentary.tsx'
+import { useOpening } from './useOpening.ts'
 import { EvalChart } from './EvalChart.tsx'
 import { MoveList } from './MoveList.tsx'
 import { CLASSIFICATION_ORDER, classificationStyle } from './classificationStyle.ts'
@@ -25,6 +26,9 @@ import { useGameReview } from './useGameReview.ts'
 const EXAMPLE_PGN = `[Result "0-1"]
 
 1. e4 e5 2. Nf3 Nc6 3. Bc4 Nd4 4. Nxe5 Qg5 5. Nxf7 Qxg2 6. Rf1 Qxe4+ 7. Be2 Nf3# 0-1`
+
+/** Stable identity, so useOpening does not re-look-up on every render. */
+const EMPTY_POSITIONS: readonly string[] = []
 
 const MIN_DEPTH = 8
 const MAX_DEPTH = 22
@@ -172,9 +176,10 @@ export function GameReviewPage() {
   const busy = status === 'loading' || status === 'running'
 
   const positions = useMemo(
-    () => (review === null ? [] : gamePositions(review.game)),
+    () => (review === null ? EMPTY_POSITIONS : gamePositions(review.game)),
     [review],
   )
+  const opening = useOpening(positions)
 
   // Adjust state during render rather than in an effect: when a review arrives
   // the board should already be showing its final position on the first paint,
@@ -239,6 +244,21 @@ export function GameReviewPage() {
               {t('review.players', { white: whiteName, black: blackName })}
             </h2>
             <p className="text-xs text-slate-500">{t('review.depthUsed', { depth: review.depth })}</p>
+            {opening?.opening != null && (
+              <p className="mt-1 text-sm text-slate-300">
+                <span className="text-slate-500">{t('review.opening')}: </span>
+                <span className="font-mono text-xs text-slate-500">{opening.opening.eco}</span>{' '}
+                {opening.opening.name}
+                <span className="text-slate-500">
+                  {' · '}
+                  {opening.leftBookAtPly === null
+                    ? t('review.openingStillBook')
+                    : t('review.openingLeftBook', {
+                        move: Math.floor(opening.leftBookAtPly / 2) + 1,
+                      })}
+                </span>
+              </p>
+            )}
           </div>
 
           <div className="flex items-center gap-3">
