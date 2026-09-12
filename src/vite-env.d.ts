@@ -23,3 +23,13 @@ interface ImportMetaEnv {
 interface ImportMeta {
   readonly env: ImportMetaEnv
 }
+
+/**
+ * Build identity, substituted by `define` in vite.config.ts.
+ *
+ * These say which source a running site was built from, so a deployment that
+ * silently failed to happen is visible rather than inferred.
+ */
+declare const __APP_VERSION__: string
+declare const __BUILD_COMMIT__: string
+declare const __BUILD_DATE__: string

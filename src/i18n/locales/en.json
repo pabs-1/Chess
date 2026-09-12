@@ -11,6 +11,7 @@
   "license": {
     "notice": "Pabs Chess is free software, distributed under the terms of the GNU GPL v3 or later.",
     "source": "Source code",
+    "build": "Version {{version}} · build {{commit}} · {{date}}",
     "engine": "Analysis powered by Stockfish, a free chess engine licensed under the GNU GPL v3."
   },
   "engineState": {

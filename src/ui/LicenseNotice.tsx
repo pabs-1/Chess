@@ -31,6 +31,13 @@ export function LicenseNotice() {
         </a>
       </p>
       <p className="mt-1">{t('license.engine')}</p>
+      <p className="mt-1 font-mono text-[0.7rem] text-slate-500">
+        {t('license.build', {
+          version: __APP_VERSION__,
+          commit: __BUILD_COMMIT__,
+          date: __BUILD_DATE__,
+        })}
+      </p>
     </footer>
   )
 }
