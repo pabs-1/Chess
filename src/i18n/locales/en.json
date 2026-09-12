@@ -135,7 +135,13 @@
       "mistake": "This move lets something concrete slip.",
       "blunder": "This move changes the game, and not in your favour."
     },
-    "solution": "The engine played {{move}}.",
+    "solution": "The engine would have played {{move}}.",
+    "confirm": {
+      "forced": "Forced move: there was no real alternative.",
+      "best": "Perfect: there was nothing better.",
+      "excellent": "Excellent move.",
+      "good": "Good move, the position stays solid."
+    },
     "motif": {
       "allows-mate": {
         "theme": "Your opponent now has a forced mate.",
@@ -202,7 +208,7 @@
     "error": "Engine error: {{message}}",
     "refused": "That move will not do: {{move}}",
     "refusedHint": "Try a different one.",
-    "lastMoveWas": "Your move {{move}}",
+    "yourMove": "Your move",
     "moves": "Moves",
     "outcome": {
       "checkmate": "Checkmate.",

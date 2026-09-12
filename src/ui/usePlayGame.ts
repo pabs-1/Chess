@@ -54,6 +54,13 @@ export const ELO_LEVELS: readonly (number | null)[] = [1320, 1600, 2000, 2400, n
 /** What the player is told about a move of theirs. */
 export interface MoveReview {
   san: string
+  /**
+   * The move played, in UCI. Kept beside the SAN because naming the engine's
+   * choice only says something when that choice differs from what was played:
+   * announcing the player's own move back to them, as the engine's, reads as
+   * if the engine had made it.
+   */
+  uci: string
   classification: MoveClassification
   winPercentLost: number
   motif: Motif | null
@@ -102,7 +109,7 @@ export interface UsePlayGameResult {
   resign: () => void
 }
 
-const DEFAULT_SETTINGS: PlaySettings = { mode: 'coach', playerColor: 'w', elo: 1600 }
+const DEFAULT_SETTINGS: PlaySettings = { mode: 'coach', playerColor: 'w', elo: 1320 }
 
 /**
  * Plays a game against Stockfish.
@@ -292,6 +299,7 @@ export function usePlayGame(): UsePlayGameResult {
           const bestMove = bestMoveOf(baseline)
           const review: MoveReview = {
             san: move.san,
+            uci: move.uci,
             classification: grade.classification,
             winPercentLost: grade.winPercentLost,
             motif: motifFor(move, baseline, after, grade.classification, bestMove),

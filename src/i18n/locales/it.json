@@ -135,7 +135,13 @@
       "mistake": "Questa mossa lascia andare qualcosa di concreto.",
       "blunder": "Questa mossa cambia la partita, e non a tuo favore."
     },
-    "solution": "Il motore giocava {{move}}.",
+    "solution": "Il motore avrebbe giocato {{move}}.",
+    "confirm": {
+      "forced": "Mossa obbligata: non c'erano alternative valide.",
+      "best": "Perfetto: non c'era niente di meglio.",
+      "excellent": "Ottima mossa.",
+      "good": "Buona mossa, la posizione resta solida."
+    },
     "motif": {
       "allows-mate": {
         "theme": "Ora l'avversario ha un matto forzato.",
@@ -202,7 +208,7 @@
     "error": "Errore del motore: {{message}}",
     "refused": "Questa mossa non va: {{move}}",
     "refusedHint": "Riprova con un'altra mossa.",
-    "lastMoveWas": "La tua mossa {{move}}",
+    "yourMove": "La tua mossa",
     "moves": "Mosse",
     "outcome": {
       "checkmate": "Scacco matto.",

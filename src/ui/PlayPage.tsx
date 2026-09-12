@@ -9,7 +9,7 @@ import { useCallback, useId, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { PLAY_MODES, isCheck, needsPromotion, turnOf } from '../analysis/index.ts'
-import type { Color, PlayMode } from '../analysis/index.ts'
+import type { Color, MoveClassification, PlayMode } from '../analysis/index.ts'
 import { Board } from './Board.tsx'
 import { PromotionPicker, type PromotionPiece } from './PromotionPicker.tsx'
 import { classificationStyle } from './classificationStyle.ts'
@@ -17,9 +17,42 @@ import { ELO_LEVELS, usePlayGame } from './usePlayGame.ts'
 import { useOpening } from './useOpening.ts'
 import type { MoveReview } from './usePlayGame.ts'
 
+/**
+ * What the coach says back when a move was not a mistake.
+ *
+ * A mistake is explained; everything else is confirmed, so that a beginner
+ * playing well is told so rather than met with an empty panel. Spelling the
+ * pairs out, rather than deriving the key from the classification, is what
+ * lets the translation keys be checked: the classifications absent here are
+ * exactly the ones the commentary explains instead.
+ */
+const CONFIRMATIONS = {
+  forced: 'commentary.confirm.forced',
+  best: 'commentary.confirm.best',
+  excellent: 'commentary.confirm.excellent',
+  good: 'commentary.confirm.good',
+} as const
+
+function confirmationFor(
+  classification: MoveClassification,
+): (typeof CONFIRMATIONS)[keyof typeof CONFIRMATIONS] | null {
+  return classification in CONFIRMATIONS
+    ? CONFIRMATIONS[classification as keyof typeof CONFIRMATIONS]
+    : null
+}
+
 function ReviewLine({ review, refused }: { review: MoveReview; refused: boolean }) {
   const { t } = useTranslation()
   const style = classificationStyle(review.classification)
+
+  /**
+   * The engine's pick is worth naming only when it is not the move just
+   * played. This is the same rule `commentFor` applies in the game review;
+   * without it the panel answers a good move with the player's own move
+   * attributed to the engine, which reads as if the engine had played it.
+   */
+  const showSolution = review.bestMoveSan !== null && review.bestMove !== review.uci
+  const confirmation = confirmationFor(review.classification)
 
   return (
     <div
@@ -30,6 +63,9 @@ function ReviewLine({ review, refused }: { review: MoveReview; refused: boolean 
     >
       <div className="flex items-center gap-2">
         <span className={`h-2.5 w-2.5 rounded-full ${style.dot}`} aria-hidden="true" />
+        <span className="text-xs uppercase tracking-wide text-slate-500">
+          {t('play.yourMove')}
+        </span>
         <span className="font-mono text-sm">{review.san}</span>
         <span className={`text-sm font-medium ${style.text}`}>
           {t(`classification.${review.classification}`)}
@@ -43,11 +79,17 @@ function ReviewLine({ review, refused }: { review: MoveReview; refused: boolean 
       {refused ? (
         <p className="text-sm text-rose-200">{t('play.refusedHint')}</p>
       ) : (
-        review.bestMoveSan !== null && (
-          <p className="text-sm text-slate-300">
-            {t('commentary.solution', { move: review.bestMoveSan })}
-          </p>
-        )
+        <>
+          {confirmation !== null && (
+            <p className="text-sm text-slate-200">{t(confirmation)}</p>
+          )}
+
+          {showSolution && (
+            <p className="text-sm text-slate-300">
+              {t('commentary.solution', { move: review.bestMoveSan })}
+            </p>
+          )}
+        </>
       )}
     </div>
   )
@@ -59,7 +101,7 @@ export function PlayPage() {
 
   const [mode, setMode] = useState<PlayMode>('coach')
   const [playerColor, setPlayerColor] = useState<Color>('w')
-  const [elo, setElo] = useState<number | null>(1600)
+  const [elo, setElo] = useState<number | null>(1320)
   const [pending, setPending] = useState<{ from: string; to: string } | null>(null)
 
   const modeFieldId = useId()

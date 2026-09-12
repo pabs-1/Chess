@@ -208,14 +208,14 @@ describe('the full Italian and English wording', () => {
       'Questa mossa cambia la partita, e non a tuo favore.',
       "Hai lasciato un pezzo dove l'avversario può prenderlo.",
       "L'avversario gioca Nxd4 e vince il cavallo in d4.",
-      'Il motore giocava Nc3.',
+      'Il motore avrebbe giocato Nc3.',
     ])
 
     expect(steps.map((step) => render('en', step))).toEqual([
       'This move changes the game, and not in your favour.',
       'You left a piece where your opponent can simply take it.',
       'Your opponent plays Nxd4 and wins the knight on d4.',
-      'The engine played Nc3.',
+      'The engine would have played Nc3.',
     ])
   })
 
