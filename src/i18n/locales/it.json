@@ -194,12 +194,15 @@
     "modeHelp": {
       "free": "Nessun aiuto: giochi e basta.",
       "coach": "Ogni tua mossa viene spiegata, e la partita prosegue.",
-      "training": "Un errore grave non viene accettato: te lo spiega e riprovi."
+      "training": "Ogni tua mossa viene commentata prima che l’avversario risponda: la confermi o torni indietro. Un errore grave non viene mai accettato."
     },
     "color": "Giochi con",
     "strength": "Forza dell'avversario",
     "strengthMax": "Massima",
     "strengthElo": "{{elo}} Elo",
+    "confirmMove": "Conferma la mossa",
+    "takeBack": "Torna indietro",
+    "decide": "Conferma la mossa o torna indietro.",
     "newGame": "Nuova partita",
     "resign": "Abbandona",
     "yourTurn": "Tocca a te",

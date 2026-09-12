@@ -238,7 +238,7 @@ export function PlayPage() {
             <Board
               fen={game.fen}
               orientation={game.settings.playerColor === 'w' ? 'white' : 'black'}
-              lastMove={game.moves[game.moves.length - 1]?.uci}
+              lastMove={game.pending?.move.uci ?? game.moves[game.moves.length - 1]?.uci}
               check={isCheck(game.fen)}
               label={t('play.title')}
               movable={movable}
@@ -253,9 +253,11 @@ export function PlayPage() {
                 ? t('play.loading')
                 : game.phase === 'engine'
                   ? t('play.thinking')
-                  : game.phase === 'over'
-                    ? t(`play.outcome.${game.outcome === 'playing' ? 'resigned' : game.outcome}`)
-                    : t('play.yourTurn')}
+                  : game.phase === 'confirm'
+                    ? t('play.decide')
+                    : game.phase === 'over'
+                      ? t(`play.outcome.${game.outcome === 'playing' ? 'resigned' : game.outcome}`)
+                      : t('play.yourTurn')}
             </p>
           </div>
 
@@ -270,6 +272,25 @@ export function PlayPage() {
 
             {game.refused === null && game.lastReview !== null && game.settings.mode !== 'free' && (
               <ReviewLine review={game.lastReview} refused={false} />
+            )}
+
+            {game.pending !== null && (
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={game.confirm}
+                  className="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white"
+                >
+                  {t('play.confirmMove')}
+                </button>
+                <button
+                  type="button"
+                  onClick={game.takeBack}
+                  className="rounded-md border border-slate-700 px-4 py-2 text-sm"
+                >
+                  {t('play.takeBack')}
+                </button>
+              </div>
             )}
 
             {opening?.opening != null && (

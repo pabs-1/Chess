@@ -73,6 +73,19 @@ export interface PlayedMove extends GameMove {
   review: MoveReview | null
 }
 
+/**
+ * A move shown to the player, graded, and not yet part of the game.
+ *
+ * Training holds every move here before letting the opponent answer, so the
+ * player sees what the move did and can take it back. Nothing about it has
+ * touched the game yet: the committed position and the baseline analysis are
+ * both still the ones from before it was played.
+ */
+export interface PendingMove {
+  move: PlayedMove
+  review: MoveReview
+}
+
 export type PlayPhase =
   /** No game yet. */
   | 'idle'
@@ -82,6 +95,11 @@ export type PlayPhase =
   | 'player'
   /** The engine is working, either coaching or choosing its move. */
   | 'engine'
+  /**
+   * Training only: the move is on the board and graded, and the player has to
+   * decide whether to keep it before the opponent gets to answer.
+   */
+  | 'confirm'
   /** The game is over. */
   | 'over'
 
@@ -100,12 +118,18 @@ export interface UsePlayGameResult {
   dests: Destinations
   /** A move training would not accept. Cleared as soon as another is tried. */
   refused: MoveReview | null
+  /** In training, the move waiting for the player to keep it or take it back. */
+  pending: PendingMove | null
   /** The review of the player's last accepted move, in coach mode. */
   lastReview: MoveReview | null
   error: string | null
   settings: PlaySettings
   start: (settings: PlaySettings) => void
   play: (from: string, to: string, promotion?: 'q' | 'r' | 'b' | 'n') => void
+  /** Commits the pending move and lets the opponent answer. */
+  confirm: () => void
+  /** Discards the pending move, leaving the position exactly as it was. */
+  takeBack: () => void
   resign: () => void
 }
 
@@ -137,12 +161,15 @@ export function usePlayGame(): UsePlayGameResult {
   const movesRef = useRef<PlayedMove[]>([])
   /** Bumped on every new game so a stale turn cannot write into a fresh one. */
   const generationRef = useRef(0)
+  /** Mirrors `pending` for the run loop, which decides the phase after a turn. */
+  const pendingRef = useRef<PendingMove | null>(null)
 
   const [settings, setSettings] = useState<PlaySettings>(DEFAULT_SETTINGS)
   const [fen, setFen] = useState(START_FEN)
   const [moves, setMoves] = useState<PlayedMove[]>([])
   const [phase, setPhase] = useState<PlayPhase>('idle')
   const [refused, setRefused] = useState<MoveReview | null>(null)
+  const [pending, setPending] = useState<PendingMove | null>(null)
   const [lastReview, setLastReview] = useState<MoveReview | null>(null)
   const [error, setError] = useState<string | null>(null)
 
@@ -233,6 +260,13 @@ export function usePlayGame(): UsePlayGameResult {
           await work(engine)
           if (generation !== generationRef.current) return
 
+          // A move held for the player's decision is not the player's turn and
+          // not the engine's: it is its own state, and ends when they choose.
+          if (pendingRef.current !== null) {
+            setPhase('confirm')
+            return
+          }
+
           setPhase(outcomeOf(fenRef.current) === 'playing' ? 'player' : 'over')
         } catch (caught) {
           if (caught instanceof EngineDisposedError) return
@@ -254,7 +288,10 @@ export function usePlayGame(): UsePlayGameResult {
       fenRef.current = START_FEN
       movesRef.current = []
 
+      pendingRef.current = null
+
       setSettings(next)
+      setPending(null)
       setRefused(null)
       setLastReview(null)
       setError(null)
@@ -315,6 +352,19 @@ export function usePlayGame(): UsePlayGameResult {
             return
           }
 
+          // Otherwise training hands the decision back. The move goes on the
+          // board and is graded, but nothing is committed: the player sees what
+          // it did and chooses. A move that ends the game is committed at once,
+          // since there is nothing left to reconsider.
+          if (mode === 'training' && outcomeOf(move.fenAfter) === 'playing') {
+            const held: PendingMove = { move: { ...move, review }, review }
+            pendingRef.current = held
+            setPending(held)
+            setLastReview(review)
+            setFen(move.fenAfter)
+            return
+          }
+
           setLastReview(review)
           movesRef.current = [...movesRef.current, { ...move, review }]
           fenRef.current = move.fenAfter
@@ -332,9 +382,48 @@ export function usePlayGame(): UsePlayGameResult {
     [phase, playEngineMove, publish, refreshBaseline, run, setLimited],
   )
 
+  /** Keeps the pending move: it joins the game and the opponent answers. */
+  const confirm = useCallback(() => {
+    const held = pendingRef.current
+    if (held === null) return
+
+    pendingRef.current = null
+    setPending(null)
+
+    movesRef.current = [...movesRef.current, held.move]
+    fenRef.current = held.move.fenAfter
+    publish()
+
+    run(async (engine) => {
+      if (outcomeOf(fenRef.current) !== 'playing') return
+      await playEngineMove(engine)
+      if (outcomeOf(fenRef.current) !== 'playing') return
+      await refreshBaseline(engine)
+    })
+  }, [playEngineMove, publish, refreshBaseline, run])
+
+  /**
+   * Drops the pending move.
+   *
+   * Nothing has to be undone: the move was never committed, so the position and
+   * the baseline analysis are still the ones the first attempt was graded
+   * against, and the next attempt is measured by exactly the same numbers.
+   */
+  const takeBack = useCallback(() => {
+    if (pendingRef.current === null) return
+
+    pendingRef.current = null
+    setPending(null)
+    setLastReview(null)
+    setFen(fenRef.current)
+    setPhase('player')
+  }, [])
+
   const resign = useCallback(() => {
     generationRef.current += 1
+    pendingRef.current = null
     engineRef.current?.stop()
+    setPending(null)
     setPhase('over')
   }, [])
 
@@ -355,11 +444,14 @@ export function usePlayGame(): UsePlayGameResult {
     outcome,
     dests,
     refused,
+    pending,
     lastReview,
     error,
     settings,
     start,
     play,
+    confirm,
+    takeBack,
     resign,
   }
 }

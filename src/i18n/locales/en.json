@@ -194,12 +194,15 @@
     "modeHelp": {
       "free": "No help at all: just play.",
       "coach": "Every move of yours is explained, and the game carries on.",
-      "training": "A blunder is not accepted: it is explained and you try again."
+      "training": "Every move of yours is explained before the opponent answers: keep it or take it back. A blunder is never accepted."
     },
     "color": "You play",
     "strength": "Opponent strength",
     "strengthMax": "Full",
     "strengthElo": "{{elo}} Elo",
+    "confirmMove": "Keep this move",
+    "takeBack": "Take it back",
+    "decide": "Keep the move, or take it back.",
     "newGame": "New game",
     "resign": "Resign",
     "yourTurn": "Your move",
