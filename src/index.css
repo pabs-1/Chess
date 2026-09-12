@@ -7,6 +7,12 @@
 
 @import 'tailwindcss';
 
+/* Chessground's own stylesheets: board geometry, the brown board, the
+   cburnett piece set. They are plain CSS shipped by the package. */
+@import 'chessground/assets/chessground.base.css';
+@import 'chessground/assets/chessground.brown.css';
+@import 'chessground/assets/chessground.cburnett.css';
+
 :root {
   color-scheme: dark;
 }

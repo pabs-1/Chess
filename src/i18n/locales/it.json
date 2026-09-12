@@ -42,5 +42,63 @@
     "columnWdl": "V-P-S",
     "columnPv": "Variante principale",
     "wdlUnavailable": "non disponibile"
+  },
+  "nav": {
+    "review": "Analisi partita",
+    "playground": "Banco di prova"
+  },
+  "classification": {
+    "forced": "Forzata",
+    "best": "Migliore",
+    "excellent": "Ottima",
+    "good": "Buona",
+    "inaccuracy": "Imprecisione",
+    "mistake": "Errore",
+    "blunder": "Errore grave"
+  },
+  "review": {
+    "title": "Analisi della partita",
+    "description": "Incolla una partita in formato PGN e ottieni valutazione mossa per mossa, classificazione degli errori, accuratezza e andamento.",
+    "pgnLabel": "Partita (PGN)",
+    "pgnPlaceholder": "1. e4 e5 2. Nf3 Nc6 …",
+    "loadExample": "Carica una partita di esempio",
+    "depthLabel": "Profondità",
+    "analyse": "Analizza la partita",
+    "cancel": "Annulla",
+    "again": "Analizza un'altra partita",
+    "empty": "Incolla una partita per cominciare.",
+    "cancelled": "Analisi annullata.",
+    "error": "Errore durante l'analisi: {{message}}",
+    "pgnError": {
+      "empty": "Non hai incollato nulla.",
+      "invalid": "Questo PGN non è leggibile.",
+      "no-moves": "Il PGN non contiene mosse."
+    },
+    "status": {
+      "loading": "Caricamento del motore…",
+      "scan": "Analisi delle posizioni",
+      "detail": "Approfondimento degli errori"
+    },
+    "progress": "{{completed}} di {{total}}",
+    "players": "{{white}} contro {{black}}",
+    "accuracy": "Accuratezza",
+    "accuracyUnavailable": "—",
+    "depthUsed": "Analizzata a profondità {{depth}}",
+    "moves": "Mosse",
+    "startPosition": "Posizione iniziale",
+    "previousMove": "Mossa precedente",
+    "nextMove": "Mossa successiva",
+    "graph": "Andamento della partita",
+    "graphHint": "Sopra la linea il Bianco sta meglio, sotto sta meglio il Nero.",
+    "selectMove": "Seleziona la mossa {{move}}",
+    "lost": "{{percent}} punti di vittoria persi",
+    "bestWas": "Il motore preferiva {{move}}",
+    "alternatives": "Alternative del motore",
+    "noAlternatives": "Alternative non calcolate per questa mossa.",
+    "summary": "Riepilogo"
+  },
+  "color": {
+    "white": "Bianco",
+    "black": "Nero"
   }
 }

@@ -42,5 +42,63 @@
     "columnWdl": "W-D-L",
     "columnPv": "Principal variation",
     "wdlUnavailable": "unavailable"
+  },
+  "nav": {
+    "review": "Game review",
+    "playground": "Engine playground"
+  },
+  "classification": {
+    "forced": "Forced",
+    "best": "Best",
+    "excellent": "Excellent",
+    "good": "Good",
+    "inaccuracy": "Inaccuracy",
+    "mistake": "Mistake",
+    "blunder": "Blunder"
+  },
+  "review": {
+    "title": "Game review",
+    "description": "Paste a game in PGN format and get a move-by-move evaluation, mistake classification, accuracy and an evaluation graph.",
+    "pgnLabel": "Game (PGN)",
+    "pgnPlaceholder": "1. e4 e5 2. Nf3 Nc6 …",
+    "loadExample": "Load an example game",
+    "depthLabel": "Depth",
+    "analyse": "Review the game",
+    "cancel": "Cancel",
+    "again": "Review another game",
+    "empty": "Paste a game to begin.",
+    "cancelled": "Review cancelled.",
+    "error": "The review failed: {{message}}",
+    "pgnError": {
+      "empty": "Nothing was pasted.",
+      "invalid": "This PGN cannot be read.",
+      "no-moves": "The PGN contains no moves."
+    },
+    "status": {
+      "loading": "Loading the engine…",
+      "scan": "Analysing positions",
+      "detail": "Looking closer at the mistakes"
+    },
+    "progress": "{{completed}} of {{total}}",
+    "players": "{{white}} versus {{black}}",
+    "accuracy": "Accuracy",
+    "accuracyUnavailable": "—",
+    "depthUsed": "Analysed at depth {{depth}}",
+    "moves": "Moves",
+    "startPosition": "Starting position",
+    "previousMove": "Previous move",
+    "nextMove": "Next move",
+    "graph": "How the game went",
+    "graphHint": "Above the line White is better, below it Black is.",
+    "selectMove": "Select move {{move}}",
+    "lost": "{{percent}} win percentage points given away",
+    "bestWas": "The engine preferred {{move}}",
+    "alternatives": "Engine alternatives",
+    "noAlternatives": "Alternatives were not computed for this move.",
+    "summary": "Summary"
+  },
+  "color": {
+    "white": "White",
+    "black": "Black"
   }
 }
