@@ -20,6 +20,7 @@
  */
 
 import type { AnalysisLine, Wdl } from '../engine/types.ts'
+import type { Evaluation } from './types.ts'
 
 /**
  * Centipawn-to-win-percentage steepness, from the Lichess accuracy model,
@@ -63,45 +64,55 @@ export function winPercentFromCp(cp: number): number {
   return clamp(50 + 50 * winning, 0, 100)
 }
 
+/** Strips a search line down to the evaluation it carries. */
+export function toEvaluation(line: AnalysisLine): Evaluation {
+  return { cp: line.scoreCp, mate: line.scoreMate, wdl: line.wdl }
+}
+
 /**
- * Win percentage for a line, picking the best source available: the engine's
- * WDL, then a mate score, then the centipawn fallback.
+ * Win percentage for an evaluation, picking the best source available: the
+ * engine's WDL, then a mate score, then the centipawn fallback.
  *
  * A mate score is a certainty, so it saturates: being the one delivering mate
  * is 100, being the one getting mated is 0.
  *
- * @returns 0–100, side-to-move POV
- * @throws when the line carries neither a score nor a mate, which the UCI
+ * The result is expressed for whichever side the evaluation is expressed for —
+ * this function does not know, and does not change, the point of view. See
+ * src/analysis/pov.ts.
+ *
+ * @returns 0–100
+ * @throws when the evaluation carries neither a score nor a mate, which the UCI
  *   parser never produces and therefore signals a bug upstream
  */
-export function winPercentFromLine(line: AnalysisLine): number {
-  if (line.wdl !== null) return winPercentFromWdl(line.wdl)
-  // `mate 0` means the side to move has already been mated.
-  if (line.scoreMate !== null) return line.scoreMate > 0 ? 100 : 0
-  if (line.scoreCp !== null) return winPercentFromCp(line.scoreCp)
+export function winPercentFromEvaluation(evaluation: Evaluation): number {
+  if (evaluation.wdl !== null) return winPercentFromWdl(evaluation.wdl)
+  // `mate 0` means the side it is expressed for has already been mated.
+  if (evaluation.mate !== null) return evaluation.mate > 0 ? 100 : 0
+  if (evaluation.cp !== null) return winPercentFromCp(evaluation.cp)
 
-  throw new Error('Cannot evaluate a line with neither a centipawn score nor a mate score')
+  throw new Error('Cannot evaluate a position with neither a centipawn score nor a mate score')
 }
 
 /**
- * Formats a line for display: `"+0.35"`, `"-1.20"`, `"0.00"`, `"M4"`, `"-M3"`.
+ * Formats an evaluation for display: `"+0.35"`, `"-1.20"`, `"0.00"`, `"M4"`,
+ * `"-M3"`. Positive always favours the side the evaluation is expressed for.
  *
  * The decimal separator stays a full stop in every language: this is chess
  * notation, like `Nf3`, not prose, so it does not belong in the translation
- * files. A positive value always favours the side to move.
+ * files.
  *
- * @throws when the line carries neither a score nor a mate
+ * @throws when the evaluation carries neither a score nor a mate
  */
-export function formatEval(line: AnalysisLine): string {
-  if (line.scoreMate !== null) {
-    return `${line.scoreMate < 0 ? '-' : ''}M${Math.abs(line.scoreMate)}`
+export function formatEval(evaluation: Evaluation): string {
+  if (evaluation.mate !== null) {
+    return `${evaluation.mate < 0 ? '-' : ''}M${Math.abs(evaluation.mate)}`
   }
 
-  if (line.scoreCp !== null) {
-    if (line.scoreCp === 0) return '0.00'
-    const pawns = Math.abs(line.scoreCp) / 100
-    return `${line.scoreCp > 0 ? '+' : '-'}${pawns.toFixed(2)}`
+  if (evaluation.cp !== null) {
+    if (evaluation.cp === 0) return '0.00'
+    const pawns = Math.abs(evaluation.cp) / 100
+    return `${evaluation.cp > 0 ? '+' : '-'}${pawns.toFixed(2)}`
   }
 
-  throw new Error('Cannot format a line with neither a centipawn score nor a mate score')
+  throw new Error('Cannot format a position with neither a centipawn score nor a mate score')
 }

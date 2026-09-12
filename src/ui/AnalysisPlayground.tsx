@@ -8,7 +8,14 @@
 import { useId, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { formatEval, isValidFen, uciMoveToSan, uciPvToSan, winPercentFromLine } from '../analysis/index.ts'
+import {
+  formatEval,
+  isValidFen,
+  toEvaluation,
+  uciMoveToSan,
+  uciPvToSan,
+  winPercentFromEvaluation,
+} from '../analysis/index.ts'
 import type { AnalysisLine } from '../engine/index.ts'
 import { useEngine } from './useEngine.ts'
 
@@ -185,9 +192,9 @@ export function AnalysisPlayground() {
                 {lines.map((line) => (
                   <tr key={line.multipv} className="border-b border-slate-800 align-top">
                     <td className="py-2 pr-4 tabular-nums text-slate-400">{line.multipv}</td>
-                    <td className="py-2 pr-4 font-mono tabular-nums">{formatEval(line)}</td>
+                    <td className="py-2 pr-4 font-mono tabular-nums">{formatEval(toEvaluation(line))}</td>
                     <td className="py-2 pr-4 tabular-nums">
-                      {percentFormatter.format(winPercentFromLine(line))}
+                      {percentFormatter.format(winPercentFromEvaluation(toEvaluation(line)))}
                     </td>
                     <td className="py-2 pr-4 tabular-nums text-slate-400">
                       {line.wdl === null

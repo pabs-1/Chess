@@ -7,8 +7,18 @@
 
 export {
   formatEval,
+  toEvaluation,
   winPercentFromCp,
-  winPercentFromLine,
+  winPercentFromEvaluation,
   winPercentFromWdl,
 } from './evaluation.ts'
+export { gamePositions, parsePgn, type PgnParseErrorCode, type PgnParseResult } from './pgn.ts'
+export type {
+  Color,
+  Evaluation,
+  GameHeaders,
+  GameMove,
+  MoveClassification,
+  ParsedGame,
+} from './types.ts'
 export { fenError, isValidFen, parseUciMove, uciMoveToSan, uciPvToSan } from './pv.ts'

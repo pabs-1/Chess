@@ -7,19 +7,18 @@
 
 import { describe, expect, it } from 'vitest'
 
-import { formatEval, winPercentFromCp, winPercentFromLine, winPercentFromWdl } from './evaluation.ts'
+import {
+  formatEval,
+  toEvaluation,
+  winPercentFromCp,
+  winPercentFromEvaluation,
+  winPercentFromWdl,
+} from './evaluation.ts'
 import type { AnalysisLine, Wdl } from '../engine/types.ts'
+import type { Evaluation } from './types.ts'
 
-function line(overrides: Partial<AnalysisLine> = {}): AnalysisLine {
-  return {
-    multipv: 1,
-    depth: 20,
-    scoreCp: null,
-    scoreMate: null,
-    wdl: null,
-    pv: ['e2e4'],
-    ...overrides,
-  }
+function evaluation(overrides: Partial<Evaluation> = {}): Evaluation {
+  return { cp: null, mate: null, wdl: null, ...overrides }
 }
 
 describe('winPercentFromWdl', () => {
@@ -92,70 +91,89 @@ describe('winPercentFromCp', () => {
   })
 })
 
-describe('winPercentFromLine', () => {
+describe('winPercentFromEvaluation', () => {
   it('prefers the engine WDL over the centipawn score', () => {
-    const value = winPercentFromLine(line({ scoreCp: 300, wdl: { win: 0, draw: 1000, loss: 0 } }))
+    const value = winPercentFromEvaluation(evaluation({ cp: 300, wdl: { win: 0, draw: 1000, loss: 0 } }))
 
     expect(value).toBe(50)
   })
 
   it('saturates on a mate score', () => {
-    expect(winPercentFromLine(line({ scoreMate: 3 }))).toBe(100)
-    expect(winPercentFromLine(line({ scoreMate: -3 }))).toBe(0)
+    expect(winPercentFromEvaluation(evaluation({ mate: 3 }))).toBe(100)
+    expect(winPercentFromEvaluation(evaluation({ mate: -3 }))).toBe(0)
   })
 
   it('treats mate 0 as already mated', () => {
-    expect(winPercentFromLine(line({ scoreMate: 0 }))).toBe(0)
+    expect(winPercentFromEvaluation(evaluation({ mate: 0 }))).toBe(0)
   })
 
   it('prefers a mate score over the centipawn fallback', () => {
-    expect(winPercentFromLine(line({ scoreCp: -50, scoreMate: 2 }))).toBe(100)
+    expect(winPercentFromEvaluation(evaluation({ cp: -50, mate: 2 }))).toBe(100)
   })
 
   it('falls back to centipawns when there is no WDL', () => {
-    expect(winPercentFromLine(line({ scoreCp: 100 }))).toBeCloseTo(59.1026, 3)
+    expect(winPercentFromEvaluation(evaluation({ cp: 100 }))).toBeCloseTo(59.1026, 3)
   })
 
   it('refuses a line with no evaluation at all', () => {
-    expect(() => winPercentFromLine(line())).toThrow(/neither a centipawn score nor a mate/)
+    expect(() => winPercentFromEvaluation(evaluation())).toThrow(/neither a centipawn score nor a mate/)
   })
 })
 
 describe('formatEval', () => {
   it('formats a positive score with an explicit plus', () => {
-    expect(formatEval(line({ scoreCp: 35 }))).toBe('+0.35')
-    expect(formatEval(line({ scoreCp: 120 }))).toBe('+1.20')
+    expect(formatEval(evaluation({ cp: 35 }))).toBe('+0.35')
+    expect(formatEval(evaluation({ cp: 120 }))).toBe('+1.20')
   })
 
   it('formats a negative score', () => {
-    expect(formatEval(line({ scoreCp: -120 }))).toBe('-1.20')
-    expect(formatEval(line({ scoreCp: -7 }))).toBe('-0.07')
+    expect(formatEval(evaluation({ cp: -120 }))).toBe('-1.20')
+    expect(formatEval(evaluation({ cp: -7 }))).toBe('-0.07')
   })
 
   it('formats a level score without a sign', () => {
-    expect(formatEval(line({ scoreCp: 0 }))).toBe('0.00')
+    expect(formatEval(evaluation({ cp: 0 }))).toBe('0.00')
   })
 
   it('always shows two decimals', () => {
-    expect(formatEval(line({ scoreCp: 100 }))).toBe('+1.00')
-    expect(formatEval(line({ scoreCp: 1 }))).toBe('+0.01')
-    expect(formatEval(line({ scoreCp: 2350 }))).toBe('+23.50')
+    expect(formatEval(evaluation({ cp: 100 }))).toBe('+1.00')
+    expect(formatEval(evaluation({ cp: 1 }))).toBe('+0.01')
+    expect(formatEval(evaluation({ cp: 2350 }))).toBe('+23.50')
   })
 
   it('formats a mate score', () => {
-    expect(formatEval(line({ scoreMate: 4 }))).toBe('M4')
-    expect(formatEval(line({ scoreMate: 1 }))).toBe('M1')
+    expect(formatEval(evaluation({ mate: 4 }))).toBe('M4')
+    expect(formatEval(evaluation({ mate: 1 }))).toBe('M1')
   })
 
   it('formats being mated', () => {
-    expect(formatEval(line({ scoreMate: -3 }))).toBe('-M3')
+    expect(formatEval(evaluation({ mate: -3 }))).toBe('-M3')
   })
 
   it('prefers the mate score when both are present', () => {
-    expect(formatEval(line({ scoreCp: 500, scoreMate: 2 }))).toBe('M2')
+    expect(formatEval(evaluation({ cp: 500, mate: 2 }))).toBe('M2')
   })
 
   it('refuses a line with no evaluation at all', () => {
-    expect(() => formatEval(line())).toThrow(/neither a centipawn score nor a mate/)
+    expect(() => formatEval(evaluation())).toThrow(/neither a centipawn score nor a mate/)
+  })
+})
+
+describe('toEvaluation', () => {
+  it('keeps only the evaluation a search line carries', () => {
+    const line: AnalysisLine = {
+      multipv: 2,
+      depth: 20,
+      scoreCp: 35,
+      scoreMate: null,
+      wdl: { win: 71, draw: 923, loss: 6 },
+      pv: ['e2e4', 'e7e5'],
+    }
+
+    expect(toEvaluation(line)).toEqual({
+      cp: 35,
+      mate: null,
+      wdl: { win: 71, draw: 923, loss: 6 },
+    })
   })
 })
