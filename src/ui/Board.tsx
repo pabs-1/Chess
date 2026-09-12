@@ -8,9 +8,10 @@
 import { useEffect, useRef } from 'react'
 import { Chessground } from 'chessground'
 import type { Api } from 'chessground/api'
-import type { Key } from 'chessground/types'
+import type { Color as BoardColor, Dests, Key } from 'chessground/types'
 
 import { parseUciMove } from '../analysis/index.ts'
+import type { Color } from '../analysis/index.ts'
 
 export interface BoardProps {
   /** Position to show. */
@@ -20,30 +21,68 @@ export interface BoardProps {
   lastMove?: string | undefined
   /** Accessible description, since the board itself is a grid of divs. */
   label?: string
+  /**
+   * Which side the viewer may move, and where. Omit for a board that is only
+   * looked at, which is what the review does.
+   */
+  movable?:
+    | {
+        color: Color
+        /** Legal destinations per origin square. */
+        dests: Map<string, string[]>
+        onMove: (from: string, to: string) => void
+      }
+    | undefined
+  /** Squares to mark, e.g. a king in check. */
+  check?: boolean
 }
+
+const BOARD_COLOR: Record<Color, BoardColor> = { w: 'white', b: 'black' }
 
 /**
  * Chessground, wrapped for React.
  *
- * View only for now: the review navigates positions, it does not play them.
- * Making it interactive is a matter of handing chessground `movable` — it is
- * built for that — and is left for when there is a game to play.
+ * The instance outlives renders and is never recreated: React hands it new
+ * props, and it animates between positions itself. Recreating it per render
+ * would lose the animation and the drag in progress.
  */
-export function Board({ fen, orientation = 'white', lastMove, label }: BoardProps) {
+export function Board({
+  fen,
+  orientation = 'white',
+  lastMove,
+  label,
+  movable,
+  check = false,
+}: BoardProps) {
   const mountRef = useRef<HTMLDivElement | null>(null)
   const apiRef = useRef<Api | null>(null)
+  /**
+   * Kept in a ref so the handler chessground was given at mount never goes
+   * stale, without rebuilding the board every time the parent re-renders.
+   */
+  const onMoveRef = useRef(movable?.onMove)
+  useEffect(() => {
+    onMoveRef.current = movable?.onMove
+  })
 
-  // The instance outlives renders; React only ever hands it new props.
   useEffect(() => {
     const mount = mountRef.current
     if (mount === null) return
 
     const api = Chessground(mount, {
-      viewOnly: true,
       coordinates: true,
       addPieceZIndex: true,
       animation: { enabled: true, duration: 180 },
       drawable: { enabled: false },
+      movable: {
+        free: false,
+        showDests: true,
+        events: {
+          after: (from: Key, to: Key) => {
+            onMoveRef.current?.(from, to)
+          },
+        },
+      },
     })
     apiRef.current = api
 
@@ -55,14 +94,27 @@ export function Board({ fen, orientation = 'white', lastMove, label }: BoardProp
 
   useEffect(() => {
     const move = lastMove === undefined ? null : parseUciMove(lastMove)
-    // exactOptionalPropertyTypes: chessground's Config wants the key absent
-    // rather than set to undefined when there is no move to highlight.
+    const dests: Dests = new Map()
+    if (movable !== undefined) {
+      for (const [from, tos] of movable.dests) dests.set(from as Key, tos as Key[])
+    }
+
+    // exactOptionalPropertyTypes: chessground's Config wants keys absent rather
+    // than set to undefined, so the optional halves are spread in.
     apiRef.current?.set({
       fen,
       orientation,
+      check,
+      viewOnly: movable === undefined,
+      ...(movable === undefined
+        ? { movable: { free: false, showDests: true, dests } }
+        : {
+            turnColor: BOARD_COLOR[movable.color],
+            movable: { free: false, showDests: true, color: BOARD_COLOR[movable.color], dests },
+          }),
       ...(move === null ? {} : { lastMove: [move.from, move.to] as Key[] }),
     })
-  }, [fen, orientation, lastMove])
+  }, [fen, orientation, lastMove, movable, check])
 
   return (
     <div

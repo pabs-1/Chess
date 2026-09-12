@@ -45,7 +45,8 @@
   },
   "nav": {
     "review": "Game review",
-    "playground": "Engine playground"
+    "playground": "Engine playground",
+    "play": "Play"
   },
   "classification": {
     "forced": "Forced",
@@ -170,5 +171,44 @@
     "r": "the rook",
     "q": "the queen",
     "k": "the king"
+  },
+  "play": {
+    "title": "Play the engine",
+    "description": "Pick how much help you want, then play. The engine comments on your moves as the game goes on.",
+    "mode": "Mode",
+    "modes": {
+      "free": "Free",
+      "coach": "Coach",
+      "training": "Training"
+    },
+    "modeHelp": {
+      "free": "No help at all: just play.",
+      "coach": "Every move of yours is explained, and the game carries on.",
+      "training": "A blunder is not accepted: it is explained and you try again."
+    },
+    "color": "You play",
+    "strength": "Opponent strength",
+    "strengthMax": "Full",
+    "strengthElo": "{{elo}} Elo",
+    "newGame": "New game",
+    "resign": "Resign",
+    "yourTurn": "Your move",
+    "thinking": "The engine is thinking…",
+    "loading": "Loading the engine…",
+    "notStarted": "Press “New game” to begin.",
+    "error": "Engine error: {{message}}",
+    "refused": "That move will not do: {{move}}",
+    "refusedHint": "Try a different one.",
+    "lastMoveWas": "Your move {{move}}",
+    "moves": "Moves",
+    "outcome": {
+      "checkmate": "Checkmate.",
+      "stalemate": "Stalemate: a draw.",
+      "insufficient-material": "Insufficient material: a draw.",
+      "fifty-move": "Fifty-move rule: a draw.",
+      "threefold": "Threefold repetition: a draw.",
+      "resigned": "You resigned."
+    },
+    "promotion": "Choose a piece"
   }
 }

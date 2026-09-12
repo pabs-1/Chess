@@ -22,6 +22,28 @@ export {
   type Classification,
   type ClassificationInput,
 } from './classify.ts'
+export {
+  bestMoveOf,
+  bestMoveSanOf,
+  gradeMove,
+  motifFor,
+  terminalWinPercent,
+  winPercentToMove,
+  type MoveGrade,
+} from './gradeMove.ts'
+export type { Motif, MotifId, MotifLevel, MotifTier, PieceOnSquare } from './motifs/index.ts'
+export {
+  PLAY_MODES,
+  isCheck,
+  legalDestinations,
+  makeMove,
+  needsPromotion,
+  outcomeOf,
+  turnOf,
+  type Destinations,
+  type PlayMode,
+  type PlayOutcome,
+} from './playGame.ts'
 export { gamePositions, parsePgn, type PgnParseErrorCode, type PgnParseResult } from './pgn.ts'
 export {
   invertEvaluation,

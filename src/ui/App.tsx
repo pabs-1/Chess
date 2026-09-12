@@ -11,13 +11,14 @@ import { useTranslation } from 'react-i18next'
 import { AnalysisPlayground } from './AnalysisPlayground.tsx'
 import { GameReviewPage } from './GameReviewPage.tsx'
 import { LanguageSwitcher } from './LanguageSwitcher.tsx'
+import { PlayPage } from './PlayPage.tsx'
 import { LicenseNotice } from './LicenseNotice.tsx'
 
 /**
  * Two pages, so a state variable rather than a router: routing a pair of tabs
  * would be a dependency for something `useState` already does.
  */
-const PAGES = ['review', 'playground'] as const
+const PAGES = ['review', 'play', 'playground'] as const
 type Page = (typeof PAGES)[number]
 
 export function App() {
@@ -53,7 +54,9 @@ export function App() {
       </nav>
 
       <main className="flex-1">
-        {page === 'review' ? <GameReviewPage /> : <AnalysisPlayground />}
+        {page === 'review' && <GameReviewPage />}
+        {page === 'play' && <PlayPage />}
+        {page === 'playground' && <AnalysisPlayground />}
       </main>
 
       <LicenseNotice />

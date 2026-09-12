@@ -45,7 +45,8 @@
   },
   "nav": {
     "review": "Analisi partita",
-    "playground": "Banco di prova"
+    "playground": "Banco di prova",
+    "play": "Gioca"
   },
   "classification": {
     "forced": "Forzata",
@@ -170,5 +171,44 @@
     "r": "la torre",
     "q": "la donna",
     "k": "il re"
+  },
+  "play": {
+    "title": "Gioca contro il motore",
+    "description": "Scegli quanta assistenza vuoi, poi gioca. Il motore commenta le tue mosse mentre la partita va avanti.",
+    "mode": "Modalità",
+    "modes": {
+      "free": "Libera",
+      "coach": "Coach",
+      "training": "Allenamento"
+    },
+    "modeHelp": {
+      "free": "Nessun aiuto: giochi e basta.",
+      "coach": "Ogni tua mossa viene spiegata, e la partita prosegue.",
+      "training": "Un errore grave non viene accettato: te lo spiega e riprovi."
+    },
+    "color": "Giochi con",
+    "strength": "Forza dell'avversario",
+    "strengthMax": "Massima",
+    "strengthElo": "{{elo}} Elo",
+    "newGame": "Nuova partita",
+    "resign": "Abbandona",
+    "yourTurn": "Tocca a te",
+    "thinking": "Il motore sta pensando…",
+    "loading": "Caricamento del motore…",
+    "notStarted": "Premi «Nuova partita» per cominciare.",
+    "error": "Errore del motore: {{message}}",
+    "refused": "Questa mossa non va: {{move}}",
+    "refusedHint": "Riprova con un'altra mossa.",
+    "lastMoveWas": "La tua mossa {{move}}",
+    "moves": "Mosse",
+    "outcome": {
+      "checkmate": "Scacco matto.",
+      "stalemate": "Stallo: patta.",
+      "insufficient-material": "Materiale insufficiente: patta.",
+      "fifty-move": "Regola delle cinquanta mosse: patta.",
+      "threefold": "Tripla ripetizione: patta.",
+      "resigned": "Hai abbandonato."
+    },
+    "promotion": "Scegli il pezzo"
   }
 }

@@ -88,6 +88,25 @@ public/engine/  Stockfish binaries (gitignored, fetched by postinstall)
   path was verified in a browser with intercepted responses. First run against
   the real APIs is still owed.
 
+## Play notes
+
+- Three modes, decided with the user: **free** plays with no commentary at all;
+  **coach** explains every move of yours and lets the game carry on; **training**
+  refuses a blunder before it reaches the board and makes you try again. Only a
+  blunder is refused — stopping on every inaccuracy would be unplayable.
+- **The engine does two jobs and they must not be confused.** It picks the
+  opponent's moves, possibly weakened by `UCI_Elo`, and it analyses yours for the
+  coach, which has to be full strength — coaching with a handicapped engine would
+  teach the handicap. `usePlayGame` switches the limit off around every analysis
+  and back on around every opponent move.
+- A refused move leaves the position *and the baseline analysis* untouched, so
+  the next attempt is graded against exactly the same numbers.
+- `chessground` has no intrinsic width: its children are absolutely positioned.
+  A board column must carry its own width (`w-full max-w-[28rem] shrink-0`) or
+  the board collapses to nothing in a flex row.
+- Grading for live play and for a whole-game review share `gradeMove.ts`. Two
+  copies of that arithmetic would eventually disagree about the same position.
+
 ## Conventions
 
 - TypeScript strict mode; pure and testable functions wherever possible,
@@ -107,7 +126,7 @@ public/engine/  Stockfish binaries (gitignored, fetched by postinstall)
 2. Analysis of a pasted PGN: win-percent-delta classification, accuracy, graph ✅
 3. Game import from the Chess.com and Lichess APIs ✅ (see the caveat below)
 4. Motif detectors + Italian/English templates ✅ (coverage is partial, see below)
-5. Play against the engine: Free / Coach / Training modes
+5. Play against the engine: Free / Coach / Training modes ✅
 6. Opening names (lichess-org/chess-openings ECO dataset, public domain) and
    out-of-book detection
 7. PWA → Capacitor (Android/iOS) → Tauri (desktop)

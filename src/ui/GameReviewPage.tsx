@@ -255,7 +255,7 @@ export function GameReviewPage() {
         </div>
 
         <div className="flex flex-col gap-6 lg:flex-row">
-          <div className="flex flex-col gap-3">
+          <div className="flex w-full max-w-[28rem] shrink-0 flex-col gap-3">
             <Board
               fen={positions[selected] ?? ''}
               lastMove={selectedMove?.uci}
