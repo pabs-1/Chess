@@ -62,6 +62,15 @@ public/engine/  Stockfish binaries (gitignored, fetched by postinstall)
   White-relative point of view belongs in `analysis/`, at the point of use, and
   must be explicit. This is the classic source of downstream sign bugs.
 - `UCI_ShowWDL` is enabled, so `info` lines carry win/draw/loss in permille.
+- **MultiPV, not depth, dominates review cost.** Measured on a 44-move game:
+  one line per position 23s, three lines 84s, because the engine cannot prune
+  the alternatives away. Hence the two-pass review in
+  `src/analysis/reviewGame.ts` — a single-line scan over every position, then a
+  MultiPV pass over only the positions where the player went wrong. Depth costs
+  too: 14 → 33s, 16 → 84s, 18 → 233s, so 14 is the default.
+- **Both sides of a grading delta must come from the same search
+  configuration.** Mixing the scan pass and the detail pass inside one
+  subtraction would make some deltas incomparable with their neighbours'.
 
 ## Conventions
 
@@ -79,7 +88,7 @@ public/engine/  Stockfish binaries (gitignored, fetched by postinstall)
 ## Roadmap (context — do not implement ahead of the user's request)
 
 1. UCI wrapper ✅
-2. Analysis of a pasted PGN: win-percent-delta classification, accuracy, graph
+2. Analysis of a pasted PGN: win-percent-delta classification, accuracy, graph ✅
 3. Game import from the Chess.com and Lichess APIs
 4. Motif detectors + Italian/English templates
 5. Play against the engine: Free / Coach / Training modes
@@ -91,9 +100,13 @@ Design notes to keep in mind for those phases:
 
 - Mistake classification is based on the **delta in win percentage**, not raw
   centipawns. Dropping 300cp while at +9 is not a mistake; dropping 80cp in a
-  level position is.
+  level position is. Implemented in `src/analysis/classify.ts`; the agreed
+  bands are 2 / 5 / 10 / 20, with `best` covering the engine's own choice or
+  anything within one point of it.
 - "Forced move" (only legal move, or alternatives far worse) and "good but not
-  best" (delta ≈ 0) are separate cases and must be handled as such.
+  best" (delta ≈ 0) are separate cases and must be handled as such. Both are
+  handled; the "alternatives far worse" half needs a second engine line, so it
+  only fires on positions the MultiPV pass covered.
 - Commentary uses **progressive disclosure**: four levels of increasing help
   that the user unlocks one at a time, so someone who wants to think it through
   is not handed the answer.
