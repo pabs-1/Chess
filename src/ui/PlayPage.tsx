@@ -1,11 +1,11 @@
 /*
- * Pabs Chess — free chess learning tools.
+ * Pabs Chess: free chess learning tools.
  * Copyright (C) 2026 Pabs Chess contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  * See COPYING for the full license text.
  */
 
-import { useId, useMemo, useState } from 'react'
+import { useCallback, useId, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { PLAY_MODES, isCheck, needsPromotion, turnOf } from '../analysis/index.ts'
@@ -75,13 +75,27 @@ export function PlayPage() {
   const started = game.phase !== 'idle'
   const playerToMove = game.phase === 'player' && turnOf(game.fen) === game.settings.playerColor
 
-  function onBoardMove(from: string, to: string) {
-    if (needsPromotion(game.fen, from, to)) {
-      setPending({ from, to })
-      return
-    }
-    game.play(from, to)
-  }
+  const play = game.play
+  const onBoardMove = useCallback(
+    (from: string, to: string) => {
+      if (needsPromotion(game.fen, from, to)) {
+        setPending({ from, to })
+        return
+      }
+      play(from, to)
+    },
+    [game.fen, play],
+  )
+
+  // Stable while nothing about the player's options has changed: handing the
+  // board a new configuration mid-drag would drop the piece being held.
+  const movable = useMemo(
+    () =>
+      playerToMove && pending === null
+        ? { color: game.settings.playerColor, dests: game.dests, onMove: onBoardMove }
+        : undefined,
+    [playerToMove, pending, game.settings.playerColor, game.dests, onBoardMove],
+  )
 
   function onPromote(piece: PromotionPiece) {
     if (pending === null) return
@@ -185,15 +199,7 @@ export function PlayPage() {
               lastMove={game.moves[game.moves.length - 1]?.uci}
               check={isCheck(game.fen)}
               label={t('play.title')}
-              movable={
-                playerToMove && pending === null
-                  ? {
-                      color: game.settings.playerColor,
-                      dests: game.dests,
-                      onMove: onBoardMove,
-                    }
-                  : undefined
-              }
+              movable={movable}
             />
 
             {pending !== null && (
@@ -220,7 +226,7 @@ export function PlayPage() {
 
             {game.refused !== null && <ReviewLine review={game.refused} refused />}
 
-            {game.refused === null && game.lastReview !== null && game.settings.mode === 'coach' && (
+            {game.refused === null && game.lastReview !== null && game.settings.mode !== 'free' && (
               <ReviewLine review={game.lastReview} refused={false} />
             )}
 

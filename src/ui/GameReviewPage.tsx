@@ -1,5 +1,5 @@
 /*
- * Pabs Chess — free chess learning tools.
+ * Pabs Chess: free chess learning tools.
  * Copyright (C) 2026 Pabs Chess contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  * See COPYING for the full license text.
@@ -254,7 +254,9 @@ export function GameReviewPage() {
                   {opening.leftBookAtPly === null
                     ? t('review.openingStillBook')
                     : t('review.openingLeftBook', {
-                        move: Math.floor(opening.leftBookAtPly / 2) + 1,
+                        // The move's own number: halving the ply would be wrong
+                        // for a game that starts from a position.
+                        move: review.moves[opening.leftBookAtPly]?.moveNumber ?? 1,
                       })}
                 </span>
               </p>
@@ -422,7 +424,7 @@ export function GameReviewPage() {
           <p className="text-sm text-slate-300">
             {status === 'loading'
               ? t('review.status.loading')
-              : `${t(`review.status.${progress?.phase ?? 'scan'}`)} — ${t('review.progress', {
+              : `${t(`review.status.${progress?.phase ?? 'scan'}`)}: ${t('review.progress', {
                   completed: progress?.completed ?? 0,
                   total: progress?.total ?? 0,
                 })}`}

@@ -1,11 +1,11 @@
 /*
- * Pabs Chess — free chess learning tools.
+ * Pabs Chess: free chess learning tools.
  * Copyright (C) 2026 Pabs Chess contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  * See COPYING for the full license text.
  */
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import {
   bestMoveOf,
@@ -38,8 +38,15 @@ const EMPTY_DESTS: Destinations = new Map()
 export const COACH_DEPTH = 12
 /** Depth the opponent searches at; its strength is set by UCI_Elo, not by this. */
 const OPPONENT_DEPTH = 12
-/** Lines the coach asks for, so a refused move can name the alternatives. */
-const COACH_MULTI_PV = 3
+/**
+ * Lines the coach asks for, on **both** sides of every grading delta.
+ *
+ * A MultiPV search prunes nothing and can score its first line differently from
+ * a single-line search at the same depth, so asking for three before the move
+ * and one after would grade the move against two different engines. Nothing in
+ * live play reads past the first line anyway.
+ */
+const COACH_MULTI_PV = 1
 
 /** Stockfish refuses anything below 1320. `null` is full strength. */
 export const ELO_LEVELS: readonly (number | null)[] = [1320, 1600, 2000, 2400, null]
@@ -109,8 +116,13 @@ const DEFAULT_SETTINGS: PlaySettings = { mode: 'coach', playerColor: 'w', elo: 1
  */
 export function usePlayGame(): UsePlayGameResult {
   const engineRef = useRef<Engine | null>(null)
-  /** True while the engine is deliberately weakened. */
-  const limitedRef = useRef(false)
+  /**
+   * The Elo limit currently applied, `null` for full strength, `undefined` when
+   * nothing has been applied yet. A boolean would not do: at full strength the
+   * "limited" and "unlimited" states are the same, and the option would be
+   * re-sent before every move the opponent makes.
+   */
+  const appliedEloRef = useRef<number | null | undefined>(undefined)
   /** The engine's view of the position the player is about to move from. */
   const baselineRef = useRef<AnalysisResult | null>(null)
   const settingsRef = useRef<PlaySettings>(DEFAULT_SETTINGS)
@@ -141,20 +153,19 @@ export function usePlayGame(): UsePlayGameResult {
     setMoves([...movesRef.current])
   }, [])
 
-  /** Turns the handicap on or off, and only when it actually changes. */
+  /** Applies the handicap, or removes it, and only when it actually changes. */
   const setLimited = useCallback(async (engine: Engine, limited: boolean) => {
-    if (limitedRef.current === limited) return
-    const { elo } = settingsRef.current
+    const wanted = limited ? settingsRef.current.elo : null
+    if (appliedEloRef.current === wanted) return
 
-    if (limited && elo !== null) {
+    if (wanted === null) {
+      await engine.setOption('UCI_LimitStrength', false)
+    } else {
       await engine.setOption('UCI_LimitStrength', true)
-      await engine.setOption('UCI_Elo', elo)
-      limitedRef.current = true
-      return
+      await engine.setOption('UCI_Elo', wanted)
     }
 
-    await engine.setOption('UCI_LimitStrength', false)
-    limitedRef.current = false
+    appliedEloRef.current = wanted
   }, [])
 
   /** Full-strength analysis of the position the player will move from. */
@@ -231,7 +242,7 @@ export function usePlayGame(): UsePlayGameResult {
     (next: PlaySettings) => {
       generationRef.current += 1
       settingsRef.current = next
-      limitedRef.current = false
+      appliedEloRef.current = undefined
       baselineRef.current = null
       fenRef.current = START_FEN
       movesRef.current = []
@@ -243,13 +254,13 @@ export function usePlayGame(): UsePlayGameResult {
       publish()
 
       run(async (engine) => {
-        // Reset the handicap flag against whatever the last game left set.
-        await engine.setOption('UCI_LimitStrength', false)
+        // Clear whatever the last game left applied.
+        await setLimited(engine, false)
         if (next.playerColor === 'b') await playEngineMove(engine)
         await refreshBaseline(engine)
       })
     },
-    [playEngineMove, publish, refreshBaseline, run],
+    [playEngineMove, publish, refreshBaseline, run, setLimited],
   )
 
   const play = useCallback(
@@ -322,12 +333,19 @@ export function usePlayGame(): UsePlayGameResult {
   const outcome = outcomeOf(fen)
   const playerToMove = phase === 'player' && turnOf(fen) === settings.playerColor
 
+  // Kept stable: the board is reconfigured whenever this changes identity, and
+  // reconfiguring it mid-drag would drop the piece the player is holding.
+  const dests = useMemo(
+    () => (playerToMove ? legalDestinations(fen) : EMPTY_DESTS),
+    [playerToMove, fen],
+  )
+
   return {
     fen,
     moves,
     phase,
     outcome,
-    dests: playerToMove ? legalDestinations(fen) : EMPTY_DESTS,
+    dests,
     refused,
     lastReview,
     error,
