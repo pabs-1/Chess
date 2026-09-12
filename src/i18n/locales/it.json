@@ -1,0 +1,46 @@
+{
+  "app": {
+    "title": "Pabs Chess",
+    "tagline": "Strumenti liberi per imparare gli scacchi, direttamente nel browser."
+  },
+  "language": {
+    "label": "Lingua",
+    "it": "Italiano",
+    "en": "English"
+  },
+  "license": {
+    "notice": "Pabs Chess è software libero, distribuito secondo i termini della GNU GPL v3 o successiva.",
+    "source": "Codice sorgente",
+    "engine": "Analisi realizzata con Stockfish, motore scacchistico libero sotto GNU GPL v3."
+  },
+  "engineState": {
+    "idle": "Motore non avviato",
+    "loading": "Caricamento del motore…",
+    "ready": "Motore pronto",
+    "searching": "Analisi in corso…",
+    "failed": "Motore non disponibile",
+    "disposed": "Motore chiuso"
+  },
+  "playground": {
+    "title": "Banco di prova del motore",
+    "description": "Incolla una posizione in notazione FEN, scegli profondità e MultiPV, e osserva l'analisi aggiornarsi mentre la ricerca avanza.",
+    "fenLabel": "Posizione (FEN)",
+    "fenReset": "Posizione iniziale",
+    "fenInvalid": "FEN non valida",
+    "depthLabel": "Profondità",
+    "multiPvLabel": "MultiPV",
+    "analyse": "Analizza",
+    "stop": "Ferma",
+    "empty": "Nessuna analisi ancora. Premi «Analizza» per iniziare.",
+    "error": "Errore del motore: {{message}}",
+    "sideToMoveHint": "Le valutazioni sono dal punto di vista di chi deve muovere.",
+    "depthReached": "Profondità raggiunta: {{depth}}",
+    "bestMove": "Mossa migliore: {{move}}",
+    "columnLine": "Linea",
+    "columnEval": "Valutazione",
+    "columnWinPercent": "Vittoria %",
+    "columnWdl": "V-P-S",
+    "columnPv": "Variante principale",
+    "wdlUnavailable": "non disponibile"
+  }
+}

@@ -7,6 +7,8 @@
 
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+// Imported first so i18next is initialised before any component renders.
+import './i18n/index.ts'
 import { App } from './ui/App.tsx'
 import './index.css'
 

@@ -1,0 +1,46 @@
+{
+  "app": {
+    "title": "Pabs Chess",
+    "tagline": "Free chess learning tools, right in your browser."
+  },
+  "language": {
+    "label": "Language",
+    "it": "Italiano",
+    "en": "English"
+  },
+  "license": {
+    "notice": "Pabs Chess is free software, distributed under the terms of the GNU GPL v3 or later.",
+    "source": "Source code",
+    "engine": "Analysis powered by Stockfish, a free chess engine licensed under the GNU GPL v3."
+  },
+  "engineState": {
+    "idle": "Engine not started",
+    "loading": "Loading the engine…",
+    "ready": "Engine ready",
+    "searching": "Analysing…",
+    "failed": "Engine unavailable",
+    "disposed": "Engine closed"
+  },
+  "playground": {
+    "title": "Engine playground",
+    "description": "Paste a position in FEN notation, pick a depth and a MultiPV count, and watch the analysis update as the search deepens.",
+    "fenLabel": "Position (FEN)",
+    "fenReset": "Starting position",
+    "fenInvalid": "Invalid FEN",
+    "depthLabel": "Depth",
+    "multiPvLabel": "MultiPV",
+    "analyse": "Analyse",
+    "stop": "Stop",
+    "empty": "No analysis yet. Press “Analyse” to start.",
+    "error": "Engine error: {{message}}",
+    "sideToMoveHint": "Evaluations are from the point of view of the side to move.",
+    "depthReached": "Depth reached: {{depth}}",
+    "bestMove": "Best move: {{move}}",
+    "columnLine": "Line",
+    "columnEval": "Evaluation",
+    "columnWinPercent": "Win %",
+    "columnWdl": "W-D-L",
+    "columnPv": "Principal variation",
+    "wdlUnavailable": "unavailable"
+  }
+}
